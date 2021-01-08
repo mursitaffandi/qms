@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.data.LoginDataSource
 import com.citraweb.qms.data.LoginRepository
+import com.citraweb.qms.ui.register.RegisterViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -20,6 +23,10 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
                     )
             ) as T
         }
+
+        if (modelClass.isAssignableFrom(RegisterViewModel::class.java))
+            return RegisterViewModel(Firebase.auth) as T
+
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

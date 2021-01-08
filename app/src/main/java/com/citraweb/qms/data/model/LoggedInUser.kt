@@ -6,4 +6,5 @@ package com.citraweb.qms.data.model
 data class LoggedInUser(
         val userId: String,
         val displayName: String
+//        val password: String
 )

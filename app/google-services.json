@@ -1,0 +1,275 @@
+{
+  "project_info": {
+    "project_number": "782610755752",
+    "firebase_url": "https://gdg29jakarta.firebaseio.com",
+    "project_id": "gdg29jakarta",
+    "storage_bucket": "gdg29jakarta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782610755752:android:c51ef14af1719ce9e0d29d",
+        "android_client_info": {
+          "package_name": "com.citraweb.qms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782610755752-o04j6poms485jrsl0f9ptmv1fbf4c8q8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.citraweb.qms",
+            "certificate_hash": "d71257f285bd803f6c1f625be9e50aafb7871b44"
+          }
+        },
+        {
+          "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXIOWgjhy1ta1VQzbnvtAMMxsH1JrkHdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "782610755752-dnu1fdsajv5diaj85jc6hltf3oj5tgfs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.web.can.agenASPIN"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782610755752:android:c1ad49d05f4490af",
+        "android_client_info": {
+          "package_name": "com.inspiraspace.jokulid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782610755752-f3bqlc86j2f4otnom54ivdfbtnh2e13b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inspiraspace.jokulid",
+            "certificate_hash": "95e893065a723b5d98e0ffa39835865bc67d90be"
+          }
+        },
+        {
+          "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXIOWgjhy1ta1VQzbnvtAMMxsH1JrkHdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "782610755752-dnu1fdsajv5diaj85jc6hltf3oj5tgfs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.web.can.agenASPIN"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782610755752:android:13192e1dd15db675",
+        "android_client_info": {
+          "package_name": "com.mursitaffandi.binaronlineassesment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782610755752-b25bv8fdsu2nierdc0ehm7mk1h83is8q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mursitaffandi.binaronlineassesment",
+            "certificate_hash": "95e893065a723b5d98e0ffa39835865bc67d90be"
+          }
+        },
+        {
+          "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXIOWgjhy1ta1VQzbnvtAMMxsH1JrkHdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "782610755752-dnu1fdsajv5diaj85jc6hltf3oj5tgfs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.web.can.agenASPIN"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782610755752:android:0fd7694d6bd26a50",
+        "android_client_info": {
+          "package_name": "com.mursitaffandi.fireholic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782610755752-bun0v77gjmcm9bqfdkioprfcutb26p16.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mursitaffandi.fireholic",
+            "certificate_hash": "95e893065a723b5d98e0ffa39835865bc67d90be"
+          }
+        },
+        {
+          "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXIOWgjhy1ta1VQzbnvtAMMxsH1JrkHdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "782610755752-dnu1fdsajv5diaj85jc6hltf3oj5tgfs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.web.can.agenASPIN"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782610755752:android:22e36a1f9abfbcd5",
+        "android_client_info": {
+          "package_name": "id.co.imastudio.simplelistview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782610755752-6jv9ep4c7th22a5ehar5frsreo9j2ook.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.co.imastudio.simplelistview",
+            "certificate_hash": "04443133c9477bbf07c9a0f38da7f9da5d351538"
+          }
+        },
+        {
+          "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXIOWgjhy1ta1VQzbnvtAMMxsH1JrkHdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "782610755752-dnu1fdsajv5diaj85jc6hltf3oj5tgfs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.web.can.agenASPIN"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782610755752:android:043cd8808a3b25b2",
+        "android_client_info": {
+          "package_name": "id.co.mursitaffandi.silaturahmirx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782610755752-3sjd5qv8f51pr71mi8kh555ea4chsv5a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.co.mursitaffandi.silaturahmirx",
+            "certificate_hash": "95e893065a723b5d98e0ffa39835865bc67d90be"
+          }
+        },
+        {
+          "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXIOWgjhy1ta1VQzbnvtAMMxsH1JrkHdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782610755752-8k1tkbv4d7ibb6u6988ublms394flar0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "782610755752-dnu1fdsajv5diaj85jc6hltf3oj5tgfs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.web.can.agenASPIN"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

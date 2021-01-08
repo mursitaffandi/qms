@@ -8,6 +8,8 @@ import com.citraweb.qms.data.LoginRepository
 import com.citraweb.qms.data.Result
 
 import com.citraweb.qms.R
+import com.citraweb.qms.utils.isPasswordValid
+import com.citraweb.qms.utils.isUserNameValid
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -30,25 +32,11 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
-            _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
+            _loginForm.value = LoginFormState(emailError = R.string.invalid_email)
         } else if (!isPasswordValid(password)) {
             _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
         } else {
             _loginForm.value = LoginFormState(isDataValid = true)
         }
-    }
-
-    // A placeholder username validation check
-    private fun isUserNameValid(username: String): Boolean {
-        return if (username.contains('@')) {
-            Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        } else {
-            username.isNotBlank()
-        }
-    }
-
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5
     }
 }
