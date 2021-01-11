@@ -1,6 +1,7 @@
 package com.citraweb.qms.data
 
 import com.citraweb.qms.data.model.LoggedInUser
+import com.citraweb.qms.utils.Result
 
 /**
  * Class that requests authentication and user information from the remote data source and

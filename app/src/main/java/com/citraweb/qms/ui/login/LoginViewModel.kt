@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import com.citraweb.qms.data.LoginRepository
-import com.citraweb.qms.data.Result
+import com.citraweb.qms.utils.Result
 
 import com.citraweb.qms.R
 import com.citraweb.qms.utils.isPasswordValid
