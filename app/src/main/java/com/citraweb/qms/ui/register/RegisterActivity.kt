@@ -8,7 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.databinding.ActivityRegisterBinding
 import com.citraweb.qms.ui.MyViewModelFactory
+import com.citraweb.qms.ui.dashboard.DashboardActivity
 import com.citraweb.qms.utils.afterTextChanged
+import com.citraweb.qms.utils.startActivity
+import com.citraweb.qms.utils.toas
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var viewModel: RegisterViewModel
@@ -36,21 +39,19 @@ class RegisterActivity : AppCompatActivity() {
             }
         })
 
-        /*viewModel.loginResult.observe(this@RegisterActivity, Observer {
-            val loginResult = it ?: return@Observer
+        viewModel.currentUserLD.observe(this@RegisterActivity, Observer {
+            val result = it ?: return@Observer
 
-            loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
+            binding.spinnerRegister.visibility = View.GONE
+            if (result.message != null) {
+                toas(getString(result.message)).show()
             }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+            if (result.success != null) {
+                startActivity<DashboardActivity>()
             }
-            setResult(Activity.RESULT_OK)
-
             //Complete and destroy login activity once successful
             finish()
-        })*/
+        })
 
         binding.tietRegisterEmail.afterTextChanged {
             viewModel.registerDataChanged(

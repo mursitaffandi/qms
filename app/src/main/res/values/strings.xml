@@ -10,6 +10,7 @@
     <string name="invalid_email">Not a valid email</string>
     <string name="invalid_password">Password must be at least 6 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="register_failed">"Register failed"</string>
     <string name="prompt_confirm_password">Confirm Password</string>
     <string name="request_canceled">Request canceled</string>
     <string name="registration_successful">Registraion successful!</string>
@@ -46,5 +47,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="forget_password">Forget Password?</string>
 
 </resources>

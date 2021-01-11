@@ -3,13 +3,12 @@ package com.citraweb.qms.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
 import com.citraweb.qms.data.LoginRepository
 import com.citraweb.qms.utils.Result
 
 import com.citraweb.qms.R
+import com.citraweb.qms.utils.isEmailValid
 import com.citraweb.qms.utils.isPasswordValid
-import com.citraweb.qms.utils.isUserNameValid
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -30,8 +29,8 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         }
     }
 
-    fun loginDataChanged(username: String, password: String) {
-        if (!isUserNameValid(username)) {
+    fun loginDataChanged(email: String, password: String) {
+        if (!isEmailValid(email)) {
             _loginForm.value = LoginFormState(emailError = R.string.invalid_email)
         } else if (!isPasswordValid(password)) {
             _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)

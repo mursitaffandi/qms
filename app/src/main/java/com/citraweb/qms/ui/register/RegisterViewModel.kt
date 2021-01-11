@@ -8,8 +8,6 @@ import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.model.User
 import com.citraweb.qms.repository.UserRepository
-import com.citraweb.qms.repository.implementation.UserRepositoryImpl
-import com.citraweb.qms.ui.login.LoginResult
 import com.citraweb.qms.utils.isPasswordValid
 import com.citraweb.qms.utils.isUserNameValid
 import com.google.firebase.auth.FirebaseUser
@@ -18,7 +16,7 @@ import kotlinx.coroutines.launch
 import com.citraweb.qms.utils.Result
 
 
-class RegisterViewModel() : ViewModel() {
+class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _echo = MutableLiveData<String?>()
     val toast: LiveData<String?>
         get() = _echo
@@ -27,20 +25,13 @@ class RegisterViewModel() : ViewModel() {
     val spinner: LiveData<Boolean>
         get() = _loading
 
-    private val _currentUserMLD = MutableLiveData(User())
-    val currentUserLD: LiveData<User>
+    private val _currentUserMLD = MutableLiveData<RegisterResult>()
+    val currentUserLD: LiveData<RegisterResult>
         get() = _currentUserMLD
 
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState>
         get() = _registerForm
-
-    private val _registerResult = MutableLiveData<LoginResult>()
-    val registerResult: LiveData<LoginResult>
-        get() = _registerResult
-
-    private val userRepository: UserRepository = UserRepositoryImpl()
-
 
     //Email
     fun registerUserFromAuthWithEmailAndPassword(name: String, email: String, password: String) {
@@ -68,10 +59,11 @@ class RegisterViewModel() : ViewModel() {
         when (val result = userRepository.createUserInFirestore(user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
-                _currentUserMLD.value = user
+                    _currentUserMLD.value = RegisterResult(success = user, message = R.string.registration_successful)
 //              startMainActivitiy(activity)
             }
             is Result.Error -> {
+                _currentUserMLD.value = RegisterResult(message = R.string.register_failed)
                 _echo.value = result.exception.message
             }
             is Result.Canceled -> {

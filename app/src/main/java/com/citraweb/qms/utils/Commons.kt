@@ -9,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.EditText
+import android.widget.Toast
 
 // A placeholder username validation check
 fun isUserNameValid(username: String): Boolean {
@@ -17,6 +18,12 @@ fun isUserNameValid(username: String): Boolean {
     } else {
         username.isNotBlank()
     }
+}
+
+// A placeholder mail validation check
+fun isEmailValid(username: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(username).matches()
+
 }
 
 // A placeholder password validation check
@@ -62,3 +69,10 @@ startActivity<MainActivity>{
    putExtra("param 1", "Simple")
 }
 * */
+
+/**
+* Don't forget to show manually
+* */
+fun Context.toas(msg : String): Toast {
+    return Toast.makeText(this, msg, Toast.LENGTH_LONG)
+}

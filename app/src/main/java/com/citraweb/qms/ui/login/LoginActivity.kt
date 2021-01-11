@@ -12,7 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.R
 import com.citraweb.qms.databinding.ActivityLoginBinding
 import com.citraweb.qms.ui.MyViewModelFactory
+import com.citraweb.qms.ui.dashboard.DashboardActivity
+import com.citraweb.qms.ui.register.RegisterActivity
 import com.citraweb.qms.utils.afterTextChanged
+import com.citraweb.qms.utils.startActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
@@ -33,11 +36,11 @@ class LoginActivity : AppCompatActivity() {
             binding.btnRegisterLogin.isEnabled = registerState.isDataValid
 
             if (registerState.emailError != null) {
-                binding.tietLoginEmail.error = getString(registerState.emailError)
+                binding.tilLoginEmail.error = getString(registerState.emailError)
             }
 
             if (registerState.passwordError != null) {
-                binding.tietLoginPassword.error = getString(registerState.passwordError)
+                binding.tilLoginPassword.error = getString(registerState.passwordError)
             }
         })
 
@@ -89,6 +92,10 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        binding.tvRegisternow.setOnClickListener {
+            startActivity<RegisterActivity>()
+        }
+
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
@@ -100,6 +107,7 @@ class LoginActivity : AppCompatActivity() {
             "$welcome $displayName",
             Toast.LENGTH_LONG
         ).show()
+        startActivity<DashboardActivity>()
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
