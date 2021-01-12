@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.citraweb.qms.utils.Result
+import com.citraweb.qms.utils.isEmailValid
 
 
 class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
@@ -38,10 +39,10 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         launchDataLoad {
             viewModelScope.launch {
                 when (val result =
-                    userRepository.registerUserFromAuthWithEmailAndPassword(email, password)) {
+                        userRepository.registerUserFromAuthWithEmailAndPassword(email, password)) {
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
-                            createUserInFirestore(createUserObject(firebaseUser, name))
+                            createUserInFirestore(createUserObject(firebaseUser, name, email))
                         }
                     }
                     is Result.Error -> {
@@ -59,8 +60,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         when (val result = userRepository.createUserInFirestore(user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
-                    _currentUserMLD.value = RegisterResult(success = user, message = R.string.registration_successful)
-//              startMainActivitiy(activity)
+                _currentUserMLD.value = RegisterResult(success = user, message = R.string.registration_successful)
             }
             is Result.Error -> {
                 _currentUserMLD.value = RegisterResult(message = R.string.register_failed)
@@ -73,15 +73,15 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     }
 
 
-    fun createUserObject(
-        firebaseUser: FirebaseUser,
-        name: String,
-        profilePicture: String = ""
+    private fun createUserObject(
+            firebaseUser: FirebaseUser,
+            name: String,
+            email: String
     ): User {
         return User(
-            id = firebaseUser.uid,
-            name = name,
-            profilePicture = profilePicture
+                id = firebaseUser.uid,
+                name = name,
+                email = email
         )
     }
 
@@ -102,13 +102,29 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         }
     }
 
-    fun registerDataChanged(username: String, password: String) {
+    fun registerDataChanged(username: String, email: String, password: String, confirmPassword: String) {
+        val errorFormState = RegisterFormState()
         if (!isUserNameValid(username)) {
-            _registerForm.value = RegisterFormState(emailError = R.string.invalid_email)
-        } else if (!isPasswordValid(password)) {
-            _registerForm.value = RegisterFormState(passwordError = R.string.invalid_password)
-        } else {
-            _registerForm.value = RegisterFormState(isDataValid = true)
+            errorFormState.usernameError = R.string.invalid_username
         }
+        if (!isEmailValid(email)) {
+            errorFormState.emailError = R.string.invalid_email
+        }
+        if (!isPasswordValid(password)) {
+            errorFormState.passwordError = R.string.invalid_password
+        }
+        if (password != confirmPassword) {
+            errorFormState.confirmPasswordError = R.string.invalid_confirm_password
+        }
+
+        if (
+            errorFormState.usernameError == null &&
+            errorFormState.emailError == null &&
+            errorFormState.passwordError == null &&
+            errorFormState.confirmPasswordError == null
+        ) errorFormState.isDataValid = true
+
+        _registerForm.value = errorFormState
+
     }
 }

@@ -13,11 +13,7 @@ import android.widget.Toast
 
 // A placeholder username validation check
 fun isUserNameValid(username: String): Boolean {
-    return if (username.contains('@')) {
-        Patterns.EMAIL_ADDRESS.matcher(username).matches()
-    } else {
-        username.isNotBlank()
-    }
+    return username.trim().length > 2
 }
 
 // A placeholder mail validation check
