@@ -1,21 +1,18 @@
 package com.citraweb.qms.ui.login
 
-import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.citraweb.qms.R
 import com.citraweb.qms.databinding.ActivityLoginBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.ui.dashboard.DashboardActivity
-import com.citraweb.qms.ui.register.RegisterActivity
 import com.citraweb.qms.utils.afterTextChanged
 import com.citraweb.qms.utils.startActivity
+import com.citraweb.qms.utils.toas
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
@@ -29,35 +26,34 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, MyViewModelFactory())
             .get(LoginViewModel::class.java)
 
-        viewModel.loginFormState.observe(this@LoginActivity, Observer {
-            val registerState = it ?: return@Observer
+        viewModel.registerFormState.observe(this@LoginActivity, Observer {
+            val loginState = it ?: return@Observer
 
-            // disable register button unless both username / password is valid
-            binding.btnRegisterLogin.isEnabled = registerState.isDataValid
+            // disable login button unless both username / password is valid
+            binding.btnRegisterLogin.isEnabled = loginState.isDataValid
 
-            if (registerState.emailError != null) {
-                binding.tilLoginEmail.error = getString(registerState.emailError)
+            binding.tilLoginEmail.error = null
+            binding.tilLoginPassword.error = null
+
+            loginState.emailError?.let { it1 ->
+                binding.tilLoginEmail.error = getString(it1)
             }
-
-            if (registerState.passwordError != null) {
-                binding.tilLoginPassword.error = getString(registerState.passwordError)
+            loginState.passwordError?.let { it1 ->
+                binding.tilLoginPassword.error = getString(it1)
             }
         })
 
-        viewModel.loginResult.observe(this@LoginActivity, Observer {
-            val registerResult = it ?: return@Observer
+        viewModel.currentUserLD.observe(this@LoginActivity, Observer {
+            val result = it ?: return@Observer
 
             binding.spinnerLogin.visibility = View.GONE
-            if (registerResult.error != null) {
-                showLoginFailed(registerResult.error)
+            if (result.message != null) {
+                toas(getString(result.message)).show()
             }
-            if (registerResult.success != null) {
-                updateUiWithUser(registerResult.success)
+            if (result.success != null) {
+                startActivity<DashboardActivity>()
+                finish()
             }
-            setResult(Activity.RESULT_OK)
-
-            //Complete and destroy register activity once successful
-            finish()
         })
 
         binding.tietLoginEmail.afterTextChanged {
@@ -66,6 +62,8 @@ class LoginActivity : AppCompatActivity() {
                 binding.tietLoginPassword.text.toString()
             )
         }
+
+
 
         binding.tietLoginPassword.apply {
             afterTextChanged {
@@ -78,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        viewModel.login(
+                        viewModel.loginUserFromAuthWithEmailAndPassword(
                             binding.tietLoginEmail.text.toString(),
                             binding.tietLoginPassword.text.toString()
                         )
@@ -88,29 +86,24 @@ class LoginActivity : AppCompatActivity() {
 
             binding.btnRegisterLogin.setOnClickListener {
                 binding.spinnerLogin.visibility = View.VISIBLE
-                viewModel.login(binding.tietLoginEmail.text.toString(), binding.tietLoginPassword.text.toString())
+                viewModel.loginUserFromAuthWithEmailAndPassword(
+                    binding.tietLoginEmail.text.toString(),
+                    binding.tietLoginPassword.text.toString()
+                )
             }
         }
 
-        binding.tvRegisternow.setOnClickListener {
-            startActivity<RegisterActivity>()
-        }
+        viewModel.toast.observe(this, { message ->
+            message?.let {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        })
 
-    }
-
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
-        startActivity<DashboardActivity>()
-    }
-
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+        viewModel.spinner.observe(this, { value ->
+            value.let { show ->
+                binding.spinnerLogin.visibility = if (show) View.VISIBLE else View.GONE
+            }
+        })
     }
 }

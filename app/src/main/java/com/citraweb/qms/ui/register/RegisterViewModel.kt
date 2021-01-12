@@ -8,13 +8,13 @@ import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.model.User
 import com.citraweb.qms.repository.UserRepository
+import com.citraweb.qms.utils.Result
+import com.citraweb.qms.utils.isEmailValid
 import com.citraweb.qms.utils.isPasswordValid
 import com.citraweb.qms.utils.isUserNameValid
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import com.citraweb.qms.utils.Result
-import com.citraweb.qms.utils.isEmailValid
 
 
 class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
@@ -39,7 +39,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         launchDataLoad {
             viewModelScope.launch {
                 when (val result =
-                        userRepository.registerUserFromAuthWithEmailAndPassword(email, password)) {
+                        userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
                             createUserInFirestore(createUserObject(firebaseUser, name, email))

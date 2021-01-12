@@ -3,39 +3,118 @@ package com.citraweb.qms.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.citraweb.qms.data.LoginRepository
-import com.citraweb.qms.utils.Result
-
+import androidx.lifecycle.viewModelScope
+import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
+import com.citraweb.qms.data.model.User
+import com.citraweb.qms.repository.UserRepository
+import com.citraweb.qms.ui.register.RegisterFormState
+import com.citraweb.qms.ui.register.RegisterResult
+import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.isEmailValid
 import com.citraweb.qms.utils.isPasswordValid
+import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  {
+    private val _echo = MutableLiveData<String?>()
+    val toast: LiveData<String?>
+        get() = _echo
 
-    private val _loginForm = MutableLiveData<LoginFormState>()
-    val loginFormState: LiveData<LoginFormState> = _loginForm
+    private val _loading = MutableLiveData(false)
+    val spinner: LiveData<Boolean>
+        get() = _loading
 
-    private val _loginResult = MutableLiveData<LoginResult>()
-    val loginResult: LiveData<LoginResult> = _loginResult
+    private val _currentUserMLD = MutableLiveData<RegisterResult>()
+    val currentUserLD: LiveData<RegisterResult>
+        get() = _currentUserMLD
 
-    fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
+    private val _registerForm = MutableLiveData<RegisterFormState>()
+    val registerFormState: LiveData<RegisterFormState>
+        get() = _registerForm
 
-        if (result is Result.Success) {
-            _loginResult.value = LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
+    //Email
+    fun loginUserFromAuthWithEmailAndPassword(email: String, password: String) {
+        launchDataLoad {
+            viewModelScope.launch {
+                when (val result =
+                    userRepository.loginUserInFirestore(email, password)) {
+                    is Result.Success -> {
+                        result.data?.let { firebaseUser ->
+                            createUserInFirestore(createUserObject(firebaseUser))
+                        }
+                    }
+                    is Result.Error -> {
+                        _echo.value = result.exception.message
+                    }
+                    is Result.Canceled -> {
+                        _echo.value = MyApp.instance.getString(R.string.request_canceled)
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun createUserInFirestore(user: User) {
+        when (val result = userRepository.createUserInFirestore(user)) {
+            is Result.Success -> {
+                _echo.value = MyApp.instance.getString(R.string.login_successful)
+                _currentUserMLD.value = RegisterResult(success = user, message = R.string.login_successful)
+            }
+            is Result.Error -> {
+                _currentUserMLD.value = RegisterResult(message = R.string.login_failed)
+                _echo.value = result.exception.message
+            }
+            is Result.Canceled -> {
+                _echo.value = MyApp.instance.getString(R.string.request_canceled)
+            }
+        }
+    }
+
+
+    private fun createUserObject(
+        firebaseUser: FirebaseUser
+    ): User {
+        return User(
+            id = firebaseUser.uid,
+            name = firebaseUser.displayName,
+            email = firebaseUser.email
+        )
+    }
+
+    fun onToastShown() {
+        _echo.value = null
+    }
+
+    private fun launchDataLoad(block: suspend () -> Unit): Job {
+        return viewModelScope.launch {
+            try {
+                _loading.value = true
+                block()
+            } catch (error: Throwable) {
+                _echo.value = error.message
+            } finally {
+                _loading.value = false
+            }
         }
     }
 
     fun loginDataChanged(email: String, password: String) {
+        val errorFormState = RegisterFormState()
         if (!isEmailValid(email)) {
-            _loginForm.value = LoginFormState(emailError = R.string.invalid_email)
-        } else if (!isPasswordValid(password)) {
-            _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
-        } else {
-            _loginForm.value = LoginFormState(isDataValid = true)
+            errorFormState.emailError = R.string.invalid_email
         }
+        if (!isPasswordValid(password)) {
+            errorFormState.passwordError = R.string.invalid_password
+        }
+
+        if (
+            errorFormState.emailError == null &&
+            errorFormState.passwordError == null
+        ) errorFormState.isDataValid = true
+
+        _registerForm.value = errorFormState
+
     }
 }

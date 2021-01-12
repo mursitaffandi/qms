@@ -1,13 +1,19 @@
 package com.citraweb.qms.ui.dashboard.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.citraweb.qms.data.model.User
+import com.citraweb.qms.repository.UserRepository
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val userRepository: UserRepository) : ViewModel()  {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    fun getUser() : User? {
+        userRepository.getUserInFirestore()?.let {
+            return User(
+                id = it.uid,
+                name = it.displayName,
+                email = it.email
+            )
+        }
+        return null
     }
-    val text: LiveData<String> = _text
-}
+ }
