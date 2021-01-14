@@ -1,11 +1,10 @@
-package com.citraweb.qms.data.user
+package com.citraweb.qms.data.queue
 
+import com.citraweb.qms.data.user.User
 import com.citraweb.qms.utils.Result
 import com.google.firebase.auth.FirebaseUser
 
-
-interface UserRepository
-{
+interface QueueRepository {
     suspend fun registerUserFromAuthWithEmailAndPassword(
         name: String,
         email: String,
@@ -15,4 +14,10 @@ interface UserRepository
     suspend fun loginUserInFirestore(email: String, password: String): Result<FirebaseUser?>
     fun logoutUserInFirestore()
     fun getUserInFirestore(): FirebaseUser?
+
+    suspend fun getOpenQueue() :
+    suspend fun joinQueue()
+    suspend fun detailQueue()
+    suspend fun exitQueue()
+
 }
