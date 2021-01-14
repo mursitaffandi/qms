@@ -58,6 +58,13 @@ openActivity(MyActivity::class.java) {
 inline fun <reified T : Activity> Context.startActivity(block: Intent.() -> Unit = {}) {
     startActivity(Intent(this, T::class.java).apply(block))
 }
+
+inline fun <reified T : Activity> Context.startActivityFinish(block: Intent.() -> Unit = {}) {
+    this.
+    startActivity(Intent(this, T::class.java).apply(
+            block
+    ))
+}
 /*
 startActivity<MainActivity>()
 

@@ -1,27 +1,49 @@
 package com.citraweb.qms.ui.dashboard
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.citraweb.qms.R
+import com.citraweb.qms.ui.MyViewModelFactory
+import com.citraweb.qms.ui.login.LoginActivity
+import com.citraweb.qms.utils.startActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 
-class DashboardActivity : AppCompatActivity() {
 
+class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var viewModel: DashboardViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
+        viewModel = ViewModelProvider(this, MyViewModelFactory())
+                .get(DashboardViewModel::class.java)
+        viewModel.start()
+
+        viewModel.currentUserLD.observe(this@DashboardActivity, Observer {
+            val result = it ?: return@Observer
+
+            if (result.success == null) {
+                startActivity<LoginActivity> {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                finish()
+            }
+        })
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -50,5 +72,13 @@ class DashboardActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId)
+        {
+            R.id.nav_logout -> viewModel.revoke()
+        }
+        return true
     }
 }

@@ -35,7 +35,7 @@
     <string name="or_register_with">Or register with</string>
     <string name="already_have_an_account">Already have an account? <font color="#FFBD2A"><big><b>Login</b></big></font></string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_dashboard">Dashboard Antrian</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -49,5 +49,6 @@
     <string name="forget_password">Forget Password?</string>
     <string name="invalid_username">username at least 3 letters</string>
     <string name="invalid_confirm_password">Confirm Password not match</string>
+    <string name="unknow_user">User not found</string>
 
 </resources>

@@ -9,7 +9,7 @@ import com.citraweb.qms.R
 import com.citraweb.qms.data.model.User
 import com.citraweb.qms.repository.UserRepository
 import com.citraweb.qms.ui.register.RegisterFormState
-import com.citraweb.qms.ui.register.RegisterResult
+import com.citraweb.qms.repository.UserResult
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.isEmailValid
 import com.citraweb.qms.utils.isPasswordValid
@@ -26,8 +26,8 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
     val spinner: LiveData<Boolean>
         get() = _loading
 
-    private val _currentUserMLD = MutableLiveData<RegisterResult>()
-    val currentUserLD: LiveData<RegisterResult>
+    private val _currentUserMLD = MutableLiveData<UserResult>()
+    val currentUserLD: LiveData<UserResult>
         get() = _currentUserMLD
 
     private val _registerForm = MutableLiveData<RegisterFormState>()
@@ -60,10 +60,10 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
         when (val result = userRepository.createUserInFirestore(user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.login_successful)
-                _currentUserMLD.value = RegisterResult(success = user, message = R.string.login_successful)
+                _currentUserMLD.value = UserResult(success = user, message = R.string.login_successful)
             }
             is Result.Error -> {
-                _currentUserMLD.value = RegisterResult(message = R.string.login_failed)
+                _currentUserMLD.value = UserResult(message = R.string.login_failed)
                 _echo.value = result.exception.message
             }
             is Result.Canceled -> {
