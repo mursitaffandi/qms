@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.citraweb.qms.R
-import com.citraweb.qms.data.model.User
-import com.citraweb.qms.repository.UserRepository
-import com.citraweb.qms.repository.UserResult
+import com.citraweb.qms.data.ResultData
+import com.citraweb.qms.data.user.User
+import com.citraweb.qms.data.user.UserRepository
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
@@ -19,8 +19,8 @@ class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
     val spinner: LiveData<Boolean>
         get() = _loading
 
-    private val _currentUserMLD = MutableLiveData<UserResult>()
-    val currentUserLD: LiveData<UserResult>
+    private val _currentUserMLD = MutableLiveData<ResultData<User>>()
+    val currentUserLD: LiveData<ResultData<User>>
         get() = _currentUserMLD
 
     fun start(){
@@ -38,7 +38,7 @@ class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
         viewModelScope.launch {
             val user = repository.getUserInFirestore()
             if (user!=null)
-                _currentUserMLD.value = UserResult(
+                _currentUserMLD.value = ResultData<User>(
                         success = User(
                                 id = user.uid,
                                 name = user.displayName,
@@ -46,7 +46,7 @@ class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
                         ),
                         message = R.string.login_successful
                 )
-             else _currentUserMLD.value = UserResult(
+             else _currentUserMLD.value = ResultData<User>(
                     success = null,
                     message = R.string.unknow_user
              )

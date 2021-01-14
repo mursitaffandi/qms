@@ -1,7 +1,5 @@
-package com.citraweb.qms.repository.implementation
+package com.citraweb.qms.data.user
 
-import com.citraweb.qms.data.model.User
-import com.citraweb.qms.repository.UserRepository
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.USER_COLLECTION_NAME
 import com.citraweb.qms.utils.await

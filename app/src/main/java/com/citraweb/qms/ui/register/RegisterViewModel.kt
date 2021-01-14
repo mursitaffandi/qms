@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
-import com.citraweb.qms.data.model.User
-import com.citraweb.qms.repository.UserRepository
-import com.citraweb.qms.repository.UserResult
+import com.citraweb.qms.data.ResultData
+import com.citraweb.qms.data.user.User
+import com.citraweb.qms.data.user.UserRepository
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.isEmailValid
 import com.citraweb.qms.utils.isPasswordValid
@@ -27,8 +27,8 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     val spinner: LiveData<Boolean>
         get() = _loading
 
-    private val _currentUserMLD = MutableLiveData<UserResult>()
-    val currentUserLD: LiveData<UserResult>
+    private val _currentUserMLD = MutableLiveData<ResultData<User>>()
+    val currentUserLD: LiveData<ResultData<User>>
         get() = _currentUserMLD
 
     private val _registerForm = MutableLiveData<RegisterFormState>()
@@ -61,10 +61,10 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         when (val result = userRepository.createUserInFirestore(user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
-                _currentUserMLD.value = UserResult(success = user, message = R.string.registration_successful)
+                _currentUserMLD.value = ResultData<User>(success = user, message = R.string.registration_successful)
             }
             is Result.Error -> {
-                _currentUserMLD.value = UserResult(message = R.string.register_failed)
+                _currentUserMLD.value = ResultData<User>(message = R.string.register_failed)
                 _echo.value = result.exception.message
             }
             is Result.Canceled -> {

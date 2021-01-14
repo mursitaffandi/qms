@@ -1,6 +1,6 @@
-package com.citraweb.qms.repository
+package com.citraweb.qms.data.user
 
-import com.citraweb.qms.data.model.User
+import com.citraweb.qms.data.user.User
 import com.citraweb.qms.utils.Result
 import com.google.firebase.auth.FirebaseUser
 

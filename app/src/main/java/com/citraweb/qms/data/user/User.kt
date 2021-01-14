@@ -1,4 +1,4 @@
-package com.citraweb.qms.data.model
+package com.citraweb.qms.data.user
 
 data class User (
     var id: String? = "",
