@@ -15,7 +15,7 @@ interface QueueRepository {
     fun logoutUserInFirestore()
     fun getUserInFirestore(): FirebaseUser?
 
-    suspend fun getOpenQueue() :
+    suspend fun getOpenQueue()
     suspend fun joinQueue()
     suspend fun detailQueue()
     suspend fun exitQueue()

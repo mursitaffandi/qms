@@ -50,5 +50,7 @@
     <string name="invalid_username">username at least 3 letters</string>
     <string name="invalid_confirm_password">Confirm Password not match</string>
     <string name="unknow_user">User not found</string>
+    <string name="request_password">Request New Password</string>
+    <string name="confirm_join">Confirm Join</string>
 
 </resources>

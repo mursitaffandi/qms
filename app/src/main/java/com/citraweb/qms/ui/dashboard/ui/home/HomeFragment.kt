@@ -17,7 +17,7 @@ class HomeFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
 //        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+        val root = inflater.inflate(R.layout.fragment_deparments, container, false)
         /*homeViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })*/
