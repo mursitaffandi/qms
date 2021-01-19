@@ -14,8 +14,8 @@ import com.citraweb.qms.utils.afterTextChanged
 import com.citraweb.qms.utils.startActivity
 import com.citraweb.qms.utils.toas
 
-class LoginActivity : AppCompatActivity() {
-    private lateinit var viewModel: LoginViewModel
+class ForgetPasswordActivity : AppCompatActivity() {
+    private lateinit var viewModel: ForgetPasswordViewModel
     private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,9 +24,9 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this, MyViewModelFactory())
-            .get(LoginViewModel::class.java)
+            .get(ForgetPasswordViewModel::class.java)
 
-        viewModel.registerFormState.observe(this@LoginActivity, Observer {
+        viewModel.registerFormState.observe(this@ForgetPasswordActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.currentUserLD.observe(this@LoginActivity, Observer {
+        viewModel.currentUserLD.observe(this@ForgetPasswordActivity, Observer {
             val result = it ?: return@Observer
 
             binding.spinnerLogin.visibility = View.GONE

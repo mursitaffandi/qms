@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  {
+class ForgetPasswordViewModel(private val userRepository: UserRepository) : ViewModel()  {
     private val _echo = MutableLiveData<String?>()
     val toast: LiveData<String?>
         get() = _echo
