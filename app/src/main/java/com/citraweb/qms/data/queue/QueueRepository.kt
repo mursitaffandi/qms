@@ -5,6 +5,7 @@ import com.citraweb.qms.utils.Result
 import com.google.firebase.auth.FirebaseUser
 
 interface QueueRepository {
-    suspend fun getOpenQueue() : Result<List<Queue>?>
+    suspend fun getQueues() : Result<List<Queue>?>
+    suspend fun addQueue(queue: Queue) : Result<Void?>
     suspend fun joinQueue(idQueue : String, idMember : String) : Result<Void?>
 }

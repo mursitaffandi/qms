@@ -38,8 +38,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
     fun loginUserFromAuthWithEmailAndPassword(email: String, password: String) {
         launchDataLoad {
             viewModelScope.launch {
-                when (val result =
-                    userRepository.loginUserInFirestore(email, password)) {
+                when (val result = userRepository.loginUserInFirestore(email, password)) {
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
                             createUserInFirestore(createUserObject(firebaseUser))

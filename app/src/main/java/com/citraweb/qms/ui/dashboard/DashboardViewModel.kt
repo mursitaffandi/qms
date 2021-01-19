@@ -38,7 +38,7 @@ class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
         viewModelScope.launch {
             val user = repository.getUserInFirestore()
             if (user!=null)
-                _currentUserMLD.value = ResultData<User>(
+                _currentUserMLD.value = ResultData(
                         success = User(
                                 id = user.uid,
                                 name = user.displayName,

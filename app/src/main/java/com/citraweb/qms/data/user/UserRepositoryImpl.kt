@@ -1,17 +1,18 @@
 package com.citraweb.qms.data.user
 
+import com.citraweb.qms.utils.DEPARTMENT_COLLECTION_NAME
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.USER_COLLECTION_NAME
 import com.citraweb.qms.utils.await
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import timber.log.Timber
 
 class UserRepositoryImpl : UserRepository {
-    private val firestoreInstance = FirebaseFirestore.getInstance()
-    private val userCollection = firestoreInstance.collection(USER_COLLECTION_NAME)
+    private val userCollection = Firebase.firestore.collection(USER_COLLECTION_NAME)
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override suspend fun registerUserFromAuthWithEmailAndPassword(

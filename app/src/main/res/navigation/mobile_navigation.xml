@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.citraweb.qms.ui.dashboard.ui.home.HomeFragment"
+        android:name="com.citraweb.qms.ui.dashboard.ui.departments.DepartmentsFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_deparments" >
         <action

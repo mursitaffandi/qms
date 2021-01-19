@@ -52,5 +52,7 @@
     <string name="unknow_user">User not found</string>
     <string name="request_password">Request New Password</string>
     <string name="confirm_join">Confirm Join</string>
+    <string name="success_departmens">success</string>
+    <string name="fail_departmens">fail</string>
 
 </resources>
