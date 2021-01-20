@@ -14,6 +14,7 @@ class QueueRepositoryImpl : QueueRepository {
         try {
             return when (val process = db.get().await()) {
                 is Result.Success -> {
+
                     Result.Success(process.data.toObjects(Queue::class.java))
                 }
                 is Result.Error -> {

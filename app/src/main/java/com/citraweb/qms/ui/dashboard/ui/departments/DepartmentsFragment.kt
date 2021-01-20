@@ -7,14 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.citraweb.qms.databinding.FragmentDeparmentsBinding
+import com.citraweb.qms.ui.MyViewModelFactory
+import com.citraweb.qms.ui.login.LoginViewModel
 
 class DepartmentsFragment : Fragment() {
 
     private var binding: FragmentDeparmentsBinding? = null
-    private val departmentsViewModel: DepartmentsViewModel by activityViewModels()
-    private val adapter = DepartmentsAdapter()
+    private lateinit var departmentsViewModel: DepartmentsViewModel
+    private lateinit var adapter : DepartmentsAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -22,6 +25,11 @@ class DepartmentsFragment : Fragment() {
     ): View? {
         val fragmentBinding = FragmentDeparmentsBinding.inflate(inflater, container, false)
         binding = fragmentBinding
+        departmentsViewModel = ViewModelProvider(this, MyViewModelFactory())
+                .get(DepartmentsViewModel::class.java)
+        adapter = DepartmentsAdapter {
+            departmentsViewModel.join(it)
+        }
         binding?.rvQueues?.apply {
             layoutManager = LinearLayoutManager(container?.context)
             adapter = this@DepartmentsFragment.adapter

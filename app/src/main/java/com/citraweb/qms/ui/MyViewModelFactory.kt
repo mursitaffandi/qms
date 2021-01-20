@@ -2,8 +2,11 @@ package com.citraweb.qms.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.citraweb.qms.data.queue.QueueRepository
+import com.citraweb.qms.data.queue.QueueRepositoryImpl
 import com.citraweb.qms.data.user.UserRepositoryImpl
 import com.citraweb.qms.ui.dashboard.DashboardViewModel
+import com.citraweb.qms.ui.dashboard.ui.departments.DepartmentsViewModel
 import com.citraweb.qms.ui.login.LoginViewModel
 import com.citraweb.qms.ui.register.RegisterViewModel
 
@@ -16,6 +19,8 @@ class MyViewModelFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) return RegisterViewModel(UserRepositoryImpl()) as T
 
         if (modelClass.isAssignableFrom(DashboardViewModel::class.java)) return DashboardViewModel(UserRepositoryImpl()) as T
+
+        if (modelClass.isAssignableFrom(DepartmentsViewModel::class.java)) return DepartmentsViewModel(QueueRepositoryImpl()) as T
 
         throw IllegalArgumentException("Unknown ViewModel class")
     }
