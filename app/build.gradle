@@ -58,7 +58,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
-    // FirebaseUI for Cloud Firestore
+    // FirebaseUI for Cloud Firestorms
     implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
 
     //Coroutines
