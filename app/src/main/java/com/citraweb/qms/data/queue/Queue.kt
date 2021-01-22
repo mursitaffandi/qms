@@ -1,6 +1,7 @@
 package com.citraweb.qms.data.queue
 
 import androidx.annotation.Keep
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
 
 @Keep
@@ -15,7 +16,7 @@ class Queue(
 
         @get:PropertyName("created_at")
         @set:PropertyName("created_at")
-        var createdAt: String? = null,
+        var createdAt: Timestamp? = null,
 
         @get:PropertyName("current_queue")
         @set:PropertyName("current_queue")

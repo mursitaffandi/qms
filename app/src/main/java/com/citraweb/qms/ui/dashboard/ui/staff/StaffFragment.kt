@@ -40,13 +40,13 @@ class StaffFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val response: FirestoreRecyclerOptions<Surrender?> =
-            FirestoreRecyclerOptions.Builder<Surrender>()
+        val response = FirestoreRecyclerOptions.Builder<Surrender>()
                 .setQuery(surrender, Surrender::class.java)
                 .build()
 
-        adapter = FireAdapter(response) {
+        adapter = FireAdapter(response) { s, id ->
 //            TODO : add action item click
+            surrender.document(id).set(Surrender("digitobe", 99))
         }
         binding?.rvStaff?.apply {
             layoutManager = LinearLayoutManager(view.context)
@@ -54,6 +54,8 @@ class StaffFragment : Fragment() {
         }
 
         adapter.notifyDataSetChanged()
+
+//        binding?.example.se
 
     }
 

@@ -1,11 +1,9 @@
 package com.citraweb.qms.ui.dashboard.ui.staff
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.citraweb.qms.data.department.Surrender
-import com.citraweb.qms.data.queue.Queue
 import com.citraweb.qms.databinding.ItemDepartmentBinding
 import com.citraweb.qms.ui.dashboard.ui.staff.FireAdapter.NoteHolder
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -13,13 +11,14 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestoreException
 import timber.log.Timber
 
-class FireAdapter(options: FirestoreRecyclerOptions<Surrender?>, private val callback : OnItemClick) :
+
+class FireAdapter(options: FirestoreRecyclerOptions<Surrender?>, private val callback: OnItemClick) :
     FirestoreRecyclerAdapter<Surrender, NoteHolder>(options) {
     override fun onBindViewHolder(holder: NoteHolder, position: Int, model: Surrender) {
         holder.binding.tvDepartment.text = model.name
         holder.binding.tvWaiting.text = model.clazz.toString()
         holder.binding.root.setOnClickListener {
-            callback.click(model)
+            callback.click(model, snapshots.getSnapshot(position).id)
         }
     }
 
@@ -38,7 +37,7 @@ class FireAdapter(options: FirestoreRecyclerOptions<Surrender?>, private val cal
         :RecyclerView.ViewHolder(binding.root)
 
     fun interface OnItemClick{
-        fun click(S : Surrender)
+        fun click(S: Surrender, id: String)
     }
 }
 
