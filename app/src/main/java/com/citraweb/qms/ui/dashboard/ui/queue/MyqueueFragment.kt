@@ -1,4 +1,4 @@
-package com.citraweb.qms.ui.dashboard.ui.slideshow
+package com.citraweb.qms.ui.dashboard.ui.queue
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.R
 
-class SlideshowFragment : Fragment() {
+class MyqueueFragment : Fragment() {
 
     private lateinit var slideshowViewModel: SlideshowViewModel
 
@@ -23,7 +23,7 @@ class SlideshowFragment : Fragment() {
                 ViewModelProvider(this).get(SlideshowViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_myqueue, container, false)
         val textView: TextView = root.findViewById(R.id.text_slideshow)
-        slideshowViewModel.text.observe(viewLifecycleOwner, Observer {
+        slideshowViewModel.text.observe(viewLifecycleOwner, {
             textView.text = it
         })
         return root

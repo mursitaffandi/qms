@@ -1,4 +1,4 @@
-package com.citraweb.qms.ui.dashboard.ui.slideshow
+package com.citraweb.qms.ui.dashboard.ui.queue
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

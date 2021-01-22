@@ -3,7 +3,9 @@ package com.citraweb.qms.ui.dashboard
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -18,12 +20,10 @@ import com.citraweb.qms.R
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.ui.login.LoginActivity
 import com.citraweb.qms.utils.startActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 
 
-class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class DashboardActivity : AppCompatActivity() {
     private lateinit var viewModel: DashboardViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -31,7 +31,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         viewModel = ViewModelProvider(this, MyViewModelFactory())
-                .get(DashboardViewModel::class.java)
+            .get(DashboardViewModel::class.java)
         viewModel.start()
 
         viewModel.currentUserLD.observe(this@DashboardActivity, Observer {
@@ -47,18 +47,21 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-       /* val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }*/
+        /* val fab: FloatingActionButton = findViewById(R.id.fab)
+         fab.setOnClickListener { view ->
+             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                     .setAction("Action", null).show()
+         }*/
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+            ), drawerLayout
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
@@ -74,11 +77,8 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId)
-        {
-            R.id.nav_logout -> viewModel.revoke()
-        }
+    fun logout(v: MenuItem) : Boolean {
+        viewModel.revoke()
         return true
     }
 }

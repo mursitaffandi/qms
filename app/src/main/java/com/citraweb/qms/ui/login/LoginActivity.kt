@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.databinding.ActivityLoginBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.ui.dashboard.DashboardActivity
+import com.citraweb.qms.ui.forgetpassword.ForgetPasswordActivity
+import com.citraweb.qms.ui.register.RegisterActivity
 import com.citraweb.qms.utils.afterTextChanged
 import com.citraweb.qms.utils.startActivity
 import com.citraweb.qms.utils.toas
@@ -26,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, MyViewModelFactory())
             .get(LoginViewModel::class.java)
 
-        viewModel.registerFormState.observe(this@LoginActivity, Observer {
+        viewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
@@ -105,5 +107,14 @@ class LoginActivity : AppCompatActivity() {
                 binding.spinnerLogin.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
+
+        binding.tvForgetpassword.setOnClickListener {
+            startActivity<ForgetPasswordActivity>()
+        }
+
+        binding.tvRegisternow.setOnClickListener {
+            startActivity<RegisterActivity>()
+        }
+
     }
 }

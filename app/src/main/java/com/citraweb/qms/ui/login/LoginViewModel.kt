@@ -30,9 +30,9 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
     val currentUserLD: LiveData<ResultData<User>>
         get() = _currentUserMLD
 
-    private val _registerForm = MutableLiveData<RegisterFormState>()
-    val registerFormState: LiveData<RegisterFormState>
-        get() = _registerForm
+    private val _loginForm = MutableLiveData<RegisterFormState>()
+    val loginFormState: LiveData<RegisterFormState>
+        get() = _loginForm
 
     //Email
     fun loginUserFromAuthWithEmailAndPassword(email: String, password: String) {
@@ -113,7 +113,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
             errorFormState.passwordError == null
         ) errorFormState.isDataValid = true
 
-        _registerForm.value = errorFormState
+        _loginForm.value = errorFormState
 
     }
 }

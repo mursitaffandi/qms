@@ -100,18 +100,15 @@ class ForgetPasswordViewModel(private val userRepository: UserRepository) : View
         }
     }
 
-    fun loginDataChanged(email: String, password: String) {
+    fun loginDataChanged(email: String) {
         val errorFormState = RegisterFormState()
         if (!isEmailValid(email)) {
             errorFormState.emailError = R.string.invalid_email
         }
-        if (!isPasswordValid(password)) {
-            errorFormState.passwordError = R.string.invalid_password
-        }
+
 
         if (
-            errorFormState.emailError == null &&
-            errorFormState.passwordError == null
+            errorFormState.emailError == null
         ) errorFormState.isDataValid = true
 
         _registerForm.value = errorFormState

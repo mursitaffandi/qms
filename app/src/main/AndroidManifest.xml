@@ -31,6 +31,12 @@
 
         </activity>
 
+        <activity
+            android:name=".ui.forgetpassword.ForgetPasswordActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+
+        </activity>
+
         <service
             android:name=".service.MyMessagingService">
             <intent-filter>
