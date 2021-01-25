@@ -56,5 +56,7 @@
     <string name="fail_departmens">fail</string>
     <string name="open">Buka</string>
     <string name="close">Tutup</string>
+    <string name="click_staff_power_off">Tahan Tombol Stop Untuk Menutup Antrian</string>
+    <string name="click_staff_power_on">Tahan Tombol Stop Untuk Membuka Antrian</string>
 
 </resources>

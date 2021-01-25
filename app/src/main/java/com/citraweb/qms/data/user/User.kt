@@ -5,3 +5,11 @@ data class User (
     var name: String? = "",
     var email: String? = ""
 )
+
+userId
+        name
+        email
+        role
+        fcm
+        departmentId
+        ticket

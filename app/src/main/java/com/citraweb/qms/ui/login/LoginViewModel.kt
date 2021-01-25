@@ -59,10 +59,10 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
         when (val result = userRepository.createUserInFirestore(user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.login_successful)
-                _currentUserMLD.value = ResultData<User>(success = user, message = R.string.login_successful)
+                _currentUserMLD.value = ResultData(success = user, message = R.string.login_successful)
             }
             is Result.Error -> {
-                _currentUserMLD.value = ResultData<User>(message = R.string.login_failed)
+                _currentUserMLD.value = ResultData(message = R.string.login_failed)
                 _echo.value = result.exception.message
             }
             is Result.Canceled -> {

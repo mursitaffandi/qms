@@ -28,6 +28,10 @@ class FireAdapter(options: FirestoreRecyclerOptions<Surrender?>, private val cal
         return NoteHolder(binding)
     }
 
+    override fun getItemCount(): Int {
+        callback.size(super.getItemCount())
+        return super.getItemCount()
+    }
     override fun onError(e: FirebaseFirestoreException) {
         Timber.tag("FirestoreException").e(e);
         super.onError(e)
@@ -36,8 +40,9 @@ class FireAdapter(options: FirestoreRecyclerOptions<Surrender?>, private val cal
     inner class NoteHolder(val binding: ItemDepartmentBinding)
         :RecyclerView.ViewHolder(binding.root)
 
-    fun interface OnItemClick{
+    interface OnItemClick{
         fun click(S: Surrender, id: String)
+        fun size(itemCount: Int)
     }
 }
 
