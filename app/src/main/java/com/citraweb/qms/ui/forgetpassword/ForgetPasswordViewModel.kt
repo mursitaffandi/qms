@@ -77,7 +77,7 @@ class ForgetPasswordViewModel(private val userRepository: UserRepository) : View
         firebaseUser: FirebaseUser
     ): User {
         return User(
-            id = firebaseUser.uid,
+            userId = firebaseUser.uid,
             name = firebaseUser.displayName,
             email = firebaseUser.email
         )

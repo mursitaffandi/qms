@@ -56,7 +56,7 @@ class UserRepositoryImpl : UserRepository {
 
     override suspend fun createUserInFirestore(user: User): Result<Void?> {
         return try {
-            userCollection.document(user.id!!).set(user).await()
+            userCollection.document(user.userId !!).set(user).await()
         } catch (exception: Exception) {
             Result.Error(exception)
         }

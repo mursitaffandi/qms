@@ -40,7 +40,7 @@ class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
             if (user!=null)
                 _currentUserMLD.value = ResultData(
                         success = User(
-                                id = user.uid,
+                                userId = user.uid,
                                 name = user.displayName,
                                 email = user.email
                         ),

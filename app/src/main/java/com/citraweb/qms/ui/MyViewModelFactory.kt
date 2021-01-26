@@ -2,6 +2,7 @@ package com.citraweb.qms.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.department.StaffRepositoryImpl
 import com.citraweb.qms.data.queue.QueueRepositoryImpl
 import com.citraweb.qms.data.user.UserRepositoryImpl
@@ -35,7 +36,7 @@ class MyViewModelFactory : ViewModelProvider.Factory {
             QueueRepositoryImpl()
         ) as T
 
-        if (modelClass.isAssignableFrom(StaffViewModel::class.java)) return StaffViewModel(
+        if (modelClass.isAssignableFrom(StaffViewModel::class.java)) return StaffViewModel(MyApp.instance,
             StaffRepositoryImpl()
         ) as T
 

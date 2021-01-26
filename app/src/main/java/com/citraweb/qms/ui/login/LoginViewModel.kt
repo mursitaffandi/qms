@@ -76,7 +76,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
         firebaseUser: FirebaseUser
     ): User {
         return User(
-            id = firebaseUser.uid,
+            userId = firebaseUser.uid,
             name = firebaseUser.displayName,
             email = firebaseUser.email
         )

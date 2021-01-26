@@ -43,7 +43,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
                         userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
-                            createUserInFirestore(createUserObject(firebaseUser, name, email))
+                            createUserInFirestore(User(firebaseUser, name))
                         }
                     }
                     is Result.Error -> {
@@ -74,17 +74,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     }
 
 
-    private fun createUserObject(
-            firebaseUser: FirebaseUser,
-            name: String,
-            email: String
-    ): User {
-        return User(
-                id = firebaseUser.uid,
-                name = name,
-                email = email
-        )
-    }
+
 
     fun onToastShown() {
         _echo.value = null

@@ -49,6 +49,6 @@ class QueueRepositoryImpl : QueueRepository {
         TODO("Not yet implemented")
     }
 
-fun observeSurender(){
-}
+    fun observeSurender() {
+    }
 }

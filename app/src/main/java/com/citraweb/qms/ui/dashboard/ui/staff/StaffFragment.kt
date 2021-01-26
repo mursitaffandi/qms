@@ -8,13 +8,10 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.citraweb.qms.R
-import com.citraweb.qms.data.department.Surrender
+import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
-import com.citraweb.qms.ui.dashboard.ui.departments.DepartmentsViewModel
 import com.citraweb.qms.utils.SURRENDER_COLLECTION_NAME
-import com.citraweb.qms.utils.toas
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -25,7 +22,6 @@ class StaffFragment : Fragment(), FireAdapter.OnItemClick {
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
     private lateinit var adapter: FireAdapter
-    private val surrender = Firebase.firestore.collection(SURRENDER_COLLECTION_NAME)
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -43,11 +39,12 @@ class StaffFragment : Fragment(), FireAdapter.OnItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val response = FirestoreRecyclerOptions.Builder<Surrender>()
-                .setQuery(surrender, Surrender::class.java)
+        val response = FirestoreRecyclerOptions.Builder<Department>()
+                .setQuery(surrender.whereEqualTo("status", 1), Department::class.java)
                 .build()
 
         adapter = FireAdapter(response, this)
+
         binding?.rvStaff?.apply {
             layoutManager = LinearLayoutManager(view.context)
             adapter = this@StaffFragment.adapter
@@ -84,9 +81,9 @@ class StaffFragment : Fragment(), FireAdapter.OnItemClick {
         adapter.stopListening()
     }
 
-    override fun click(S: Surrender, id: String) {
+    override fun click(S: Department, id: String) {
 //            TODO : add action item click
-        surrender.document(id).set(Surrender("digitobe", 99))
+        surrender.document(id).set(Department("digitobe", ""))
     }
 
     override fun size(itemCount: Int) {

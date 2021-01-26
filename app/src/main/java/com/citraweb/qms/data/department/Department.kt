@@ -1,6 +1,7 @@
 package com.citraweb.qms.data.department
 
 import androidx.annotation.Keep
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
 
 @Keep
@@ -15,12 +16,12 @@ data class Department(
 
         @get:PropertyName("createdAt")
         @set:PropertyName("createdAt")
-        var createdAt: String? = null,
+        var createdAt: Timestamp? = null,
 
 
         @get:PropertyName("updatedAt")
         @set:PropertyName("updatedAt")
-        var updatedAt: String? = null,
+        var updatedAt: Timestamp? = null,
 
 
         @get:PropertyName("name")
@@ -32,25 +33,29 @@ data class Department(
         @set:PropertyName("prefix")
         var prefix: String? = null,
 
+        @get:PropertyName("staffId")
+        @set:PropertyName("staffId")
+        var staffId: String? = null,
+
 
         @get:PropertyName("status")
         @set:PropertyName("status")
-        var status: String? = null,
+        var status: Int? = null,
 
 
         @get:PropertyName("waitings")
         @set:PropertyName("waitings")
-        var waitings: String? = null,
+        var waitings: HashMap<Int, String>? = null,
 
 
         @get:PropertyName("currentQueue")
         @set:PropertyName("currentQueue")
-        var currentQueue: String? = null,
+        var currentQueue: Int? = null,
 
 
         @get:PropertyName("amount")
         @set:PropertyName("amount")
-        var amount: String? = null
+        var amount: Int? = null
 
-        )
+)
 
