@@ -1,7 +1,5 @@
 package com.citraweb.qms.service
 
-import android.widget.Toast
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber

@@ -12,7 +12,6 @@ import com.citraweb.qms.data.user.UserRepository
 import com.citraweb.qms.ui.register.RegisterFormState
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.isEmailValid
-import com.citraweb.qms.utils.isPasswordValid
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.databinding.ItemDepartmentBinding
-import com.citraweb.qms.ui.dashboard.ui.staff.FireAdapter.NoteHolder
+import com.citraweb.qms.ui.dashboard.ui.staff.FireDepartmentAdapter.NoteHolder
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestoreException
 import timber.log.Timber
 
 
-class FireAdapter(options: FirestoreRecyclerOptions<Department?>, private val callback: OnItemClick) :
+class FireDepartmentAdapter(options: FirestoreRecyclerOptions<Department?>, private val callback: OnItemClick) :
     FirestoreRecyclerAdapter<Department, NoteHolder>(options) {
     override fun onBindViewHolder(holder: NoteHolder, position: Int, model: Department) {
         holder.binding.tvDepartment.text = model.name

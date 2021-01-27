@@ -37,7 +37,8 @@ class MyViewModelFactory : ViewModelProvider.Factory {
         ) as T
 
         if (modelClass.isAssignableFrom(StaffViewModel::class.java)) return StaffViewModel(MyApp.instance,
-            StaffRepositoryImpl()
+            StaffRepositoryImpl("xhANVssutCWtgKz79SQXWYuVnBy1")
+//        TODO : change to variable
         ) as T
 
         throw IllegalArgumentException("Unknown ViewModel class")

@@ -9,19 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.citraweb.qms.data.department.Department
+import com.citraweb.qms.data.user.User
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
-import com.citraweb.qms.utils.SURRENDER_COLLECTION_NAME
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 
-class StaffFragment : Fragment(), FireAdapter.OnItemClick {
+class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
 
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
-    private lateinit var adapter: FireAdapter
+    private lateinit var memberAdapter: FireMemberAdapter
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -39,18 +36,15 @@ class StaffFragment : Fragment(), FireAdapter.OnItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val response = FirestoreRecyclerOptions.Builder<Department>()
-                .setQuery(surrender.whereEqualTo("status", 1), Department::class.java)
-                .build()
 
-        adapter = FireAdapter(response, this)
+        memberAdapter = FireMemberAdapter(viewModel.query, this)
 
         binding?.rvStaff?.apply {
             layoutManager = LinearLayoutManager(view.context)
-            adapter = this@StaffFragment.adapter
+            adapter = this@StaffFragment.memberAdapter
         }
 
-        adapter.notifyDataSetChanged()
+        memberAdapter.notifyDataSetChanged()
 
         binding?.ivPower?.setOnLongClickListener {
             powerHandler(it as ImageView)
@@ -73,17 +67,16 @@ class StaffFragment : Fragment(), FireAdapter.OnItemClick {
 
     override fun onStart() {
         super.onStart()
-        adapter.startListening()
+        memberAdapter.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        adapter.stopListening()
+        memberAdapter.stopListening()
     }
 
-    override fun click(S: Department, id: String) {
-//            TODO : add action item click
-        surrender.document(id).set(Department("digitobe", ""))
+    override fun click(S: User, idSnapshot: String) {
+        TODO("Not yet implemented")
     }
 
     override fun size(itemCount: Int) {

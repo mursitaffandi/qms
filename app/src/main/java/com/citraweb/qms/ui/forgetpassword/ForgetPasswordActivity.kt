@@ -2,13 +2,11 @@ package com.citraweb.qms.ui.forgetpassword
 
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.databinding.ActivityForegtpasswordBinding
-import com.citraweb.qms.databinding.ActivityLoginBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.ui.dashboard.DashboardActivity
 import com.citraweb.qms.utils.afterTextChanged

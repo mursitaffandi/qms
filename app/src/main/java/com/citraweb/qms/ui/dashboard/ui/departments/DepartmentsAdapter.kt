@@ -1,7 +1,6 @@
 package com.citraweb.qms.ui.dashboard.ui.departments
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.citraweb.qms.MyApp

@@ -1,6 +1,5 @@
 package com.citraweb.qms.data.user
 
-import com.citraweb.qms.utils.DEPARTMENT_COLLECTION_NAME
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.USER_COLLECTION_NAME
 import com.citraweb.qms.utils.await
