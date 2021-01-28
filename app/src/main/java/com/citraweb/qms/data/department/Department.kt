@@ -40,7 +40,7 @@ data class Department(
 
         @get:PropertyName("status")
         @set:PropertyName("status")
-        var status: Int? = null,
+        var status: String? = null,
 
 
         @get:PropertyName("waitings")

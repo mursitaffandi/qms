@@ -10,6 +10,7 @@ import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
 import com.citraweb.qms.ui.register.RegisterFormState
+import com.citraweb.qms.utils.MyBaseViewModel
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.isEmailValid
 import com.citraweb.qms.utils.isPasswordValid
@@ -17,14 +18,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  {
-    private val _echo = MutableLiveData<String?>()
-    val toast: LiveData<String?>
-        get() = _echo
-
-    private val _loading = MutableLiveData(false)
-    val spinner: LiveData<Boolean>
-        get() = _loading
+class LoginViewModel(private val userRepository: UserRepository) : MyBaseViewModel()  {
 
     private val _currentUserMLD = MutableLiveData<ResultData<User>>()
     val currentUserLD: LiveData<ResultData<User>>
@@ -80,23 +74,6 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel()  
             name = firebaseUser.displayName,
             email = firebaseUser.email
         )
-    }
-
-    fun onToastShown() {
-        _echo.value = null
-    }
-
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return viewModelScope.launch {
-            try {
-                _loading.value = true
-                block()
-            } catch (error: Throwable) {
-                _echo.value = error.message
-            } finally {
-                _loading.value = false
-            }
-        }
     }
 
     fun loginDataChanged(email: String, password: String) {

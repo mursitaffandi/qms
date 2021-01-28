@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
+import com.citraweb.qms.utils.Result
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
@@ -36,21 +38,22 @@ class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
 
     private fun checkCredential(){
         viewModelScope.launch {
-            val user = repository.getUserInFirestore()
-            if (user!=null)
-                _currentUserMLD.value = ResultData(
-                        success = User(
-                                userId = user.uid,
-                                name = user.displayName,
-                                email = user.email
-                        ),
-                        message = R.string.login_successful
-                )
-             else _currentUserMLD.value = ResultData<User>(
-                    success = null,
-                    message = R.string.unknow_user
-             )
-
+            when (val result = repository.getUserInFirestore()) {
+                is Result.Success -> {
+                    result.data?.let { firestoreUser ->
+                        _currentUserMLD.value = ResultData(
+                                success = firestoreUser,
+                                message = R.string.login_successful
+                        )
+                    }
+                }
+                is Result.Error -> {
+                    _echo.value = result.exception.message
+                }
+                is Result.Canceled -> {
+                    _echo.value = MyApp.instance.getString(R.string.request_canceled)
+                }
+            }
         }
     }
 }

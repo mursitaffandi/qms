@@ -11,7 +11,6 @@ class MyApp : Application() {
         instance = this
 
         // This will initialise Timber
-        // This will initialise Timber
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }
@@ -20,5 +19,7 @@ class MyApp : Application() {
     companion object {
         lateinit var instance: MyApp
             private set
+        var idDocumentUser : String? = null
+        var idDocumentDepartment : String? = null
     }
 }

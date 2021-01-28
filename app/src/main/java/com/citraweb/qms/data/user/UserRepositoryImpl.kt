@@ -6,6 +6,7 @@ import com.citraweb.qms.utils.await
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
@@ -55,7 +56,7 @@ class UserRepositoryImpl : UserRepository {
 
     override suspend fun createUserInFirestore(user: User): Result<Void?> {
         return try {
-            userCollection.document(user.userId !!).set(user).await()
+            userCollection.document(user.userId!!).set(user).await()
         } catch (exception: Exception) {
             Result.Error(exception)
         }
@@ -91,7 +92,25 @@ class UserRepositoryImpl : UserRepository {
         firebaseAuth.signOut()
     }
 
-    override fun getUserInFirestore(): FirebaseUser? {
-        return firebaseAuth.currentUser
+    override suspend fun getUserInFirestore(): Result<User?> {
+        try {
+            return when (val resultDocumentSnapshot = userCollection.document(firebaseAuth.uid!!).get().await()) {
+                is Result.Success -> {
+                    Result.Success(resultDocumentSnapshot.data.toObject(User::class.java))
+                }
+                is Result.Error -> {
+                    Timber.e("${resultDocumentSnapshot.exception}")
+                    Result.Error(resultDocumentSnapshot.exception)
+                }
+                is Result.Canceled -> {
+                    Timber.e("${resultDocumentSnapshot.exception}")
+                    Result.Canceled(resultDocumentSnapshot.exception)
+                }
+            }
+        } catch (exception: Exception) {
+            return Result.Error(exception)
+        }
     }
+
+
 }

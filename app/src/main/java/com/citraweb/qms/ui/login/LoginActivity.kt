@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            binding.btnRegisterLogin.isEnabled = loginState.isDataValid
+            binding.btnLogin.isEnabled = loginState.isDataValid
 
             binding.tilLoginEmail.error = null
             binding.tilLoginPassword.error = null
@@ -49,9 +49,7 @@ class LoginActivity : AppCompatActivity() {
             val result = it ?: return@Observer
 
             binding.spinnerLogin.visibility = View.GONE
-            if (result.message != null) {
-                toas(getString(result.message)).show()
-            }
+            toas(getString(result.message)).show()
             if (result.success != null) {
                 startActivity<DashboardActivity>()
                 finish()
@@ -78,20 +76,14 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        viewModel.loginUserFromAuthWithEmailAndPassword(
-                            binding.tietLoginEmail.text.toString(),
-                            binding.tietLoginPassword.text.toString()
-                        )
+                        doLogin()
                 }
                 false
             }
 
-            binding.btnRegisterLogin.setOnClickListener {
+            binding.btnLogin.setOnClickListener {
                 binding.spinnerLogin.visibility = View.VISIBLE
-                viewModel.loginUserFromAuthWithEmailAndPassword(
-                    binding.tietLoginEmail.text.toString(),
-                    binding.tietLoginPassword.text.toString()
-                )
+                doLogin()
             }
         }
 
@@ -116,5 +108,12 @@ class LoginActivity : AppCompatActivity() {
             startActivity<RegisterActivity>()
         }
 
+    }
+
+    fun doLogin(){
+        viewModel.loginUserFromAuthWithEmailAndPassword(
+                binding.tietLoginEmail.text.toString(),
+                binding.tietLoginPassword.text.toString()
+        )
     }
 }

@@ -14,5 +14,5 @@ interface UserRepository
     suspend fun createUserInFirestore(user: User): Result<Void?>
     suspend fun loginUserInFirestore(email: String, password: String): Result<FirebaseUser?>
     fun logoutUserInFirestore()
-    fun getUserInFirestore(): FirebaseUser?
+    suspend fun getUserInFirestore(): Result<User?>
 }
