@@ -45,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.currentUserLD.observe(this@LoginActivity, Observer {
+        viewModel.currentFireUserLD.observe(this@LoginActivity, Observer {
             val result = it ?: return@Observer
 
             binding.spinnerLogin.visibility = View.GONE

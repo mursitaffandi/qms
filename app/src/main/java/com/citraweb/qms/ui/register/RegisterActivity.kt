@@ -30,7 +30,7 @@ class RegisterActivity : AppCompatActivity() {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            binding.btnRegisterLogin.isEnabled = loginState.isDataValid
+            binding.btnRegister.isEnabled = loginState.isDataValid
 
             binding.tilRegisterName.error = null
             binding.tilRegisterEmail.error = null
@@ -85,7 +85,7 @@ class RegisterActivity : AppCompatActivity() {
                 false
             }
 
-            binding.btnRegisterLogin.setOnClickListener {
+            binding.btnRegister.setOnClickListener {
                 binding.spinnerRegister.visibility = View.VISIBLE
                 registration()
             }

@@ -67,8 +67,7 @@ class UserRepositoryImpl : UserRepository {
         password: String
     ): Result<FirebaseUser?> {
         try {
-            return when (val resultDocumentSnapshot =
-                firebaseAuth.signInWithEmailAndPassword(email, password).await()) {
+            return when (val resultDocumentSnapshot = firebaseAuth.signInWithEmailAndPassword(email, password).await()) {
                 is Result.Success -> {
                     Timber.i("Result.Success")
                     val firebaseUser = resultDocumentSnapshot.data.user

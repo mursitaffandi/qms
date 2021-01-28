@@ -29,7 +29,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            binding.btnRegisterLogin.isEnabled = loginState.isDataValid
+            binding.btnLogin.isEnabled = loginState.isDataValid
 
             binding.tilLoginEmail.error = null
 

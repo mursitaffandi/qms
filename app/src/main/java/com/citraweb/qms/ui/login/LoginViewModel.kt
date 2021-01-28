@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(private val userRepository: UserRepository) : MyBaseViewModel()  {
 
-    private val _currentUserMLD = MutableLiveData<ResultData<User>>()
-    val currentUserLD: LiveData<ResultData<User>>
-        get() = _currentUserMLD
+    private val _currentFireUserMLD = MutableLiveData<ResultData<FirebaseUser>>()
+    val currentFireUserLD: LiveData<ResultData<FirebaseUser>>
+        get() = _currentFireUserMLD
 
     private val _loginForm = MutableLiveData<RegisterFormState>()
     val loginFormState: LiveData<RegisterFormState>
@@ -34,11 +34,13 @@ class LoginViewModel(private val userRepository: UserRepository) : MyBaseViewMod
             viewModelScope.launch {
                 when (val result = userRepository.loginUserInFirestore(email, password)) {
                     is Result.Success -> {
-                        result.data?.let { firebaseUser ->
-                            createUserInFirestore(createUserObject(firebaseUser))
+                        _echo.value = MyApp.instance.getString(R.string.registration_successful)
+                        result.data?.let {
+                            _currentFireUserMLD.value = ResultData(success = it, message = R.string.registration_successful)
                         }
                     }
                     is Result.Error -> {
+                        _currentFireUserMLD.value = ResultData(message = R.string.register_failed)
                         _echo.value = result.exception.message
                     }
                     is Result.Canceled -> {
@@ -47,33 +49,6 @@ class LoginViewModel(private val userRepository: UserRepository) : MyBaseViewMod
                 }
             }
         }
-    }
-
-    private suspend fun createUserInFirestore(user: User) {
-        when (val result = userRepository.createUserInFirestore(user)) {
-            is Result.Success -> {
-                _echo.value = MyApp.instance.getString(R.string.login_successful)
-                _currentUserMLD.value = ResultData(success = user, message = R.string.login_successful)
-            }
-            is Result.Error -> {
-                _currentUserMLD.value = ResultData(message = R.string.login_failed)
-                _echo.value = result.exception.message
-            }
-            is Result.Canceled -> {
-                _echo.value = MyApp.instance.getString(R.string.request_canceled)
-            }
-        }
-    }
-
-
-    private fun createUserObject(
-        firebaseUser: FirebaseUser
-    ): User {
-        return User(
-            userId = firebaseUser.uid,
-            name = firebaseUser.displayName,
-            email = firebaseUser.email
-        )
     }
 
     fun loginDataChanged(email: String, password: String) {

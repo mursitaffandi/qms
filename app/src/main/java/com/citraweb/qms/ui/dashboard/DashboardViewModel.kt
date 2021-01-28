@@ -9,17 +9,11 @@ import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
+import com.citraweb.qms.utils.MyBaseViewModel
 import com.citraweb.qms.utils.Result
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
-    private val _echo = MutableLiveData<String?>()
-    val toast: LiveData<String?>
-        get() = _echo
-
-    private val _loading = MutableLiveData(false)
-    val spinner: LiveData<Boolean>
-        get() = _loading
+class DashboardViewModel(private val repository : UserRepository) : MyBaseViewModel(){
 
     private val _currentUserMLD = MutableLiveData<ResultData<User>>()
     val currentUserLD: LiveData<ResultData<User>>
@@ -30,9 +24,8 @@ class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
     }
 
     fun revoke(){
-        viewModelScope.launch {
             repository.logoutUserInFirestore()
-        }
+
         checkCredential()
     }
 
