@@ -77,6 +77,7 @@ class DashboardActivity : AppCompatActivity() {
 
     fun logout(v: MenuItem) : Boolean {
         viewModel.revoke()
+        drawerLayout.closeDrawers()
         return true
     }
 }
