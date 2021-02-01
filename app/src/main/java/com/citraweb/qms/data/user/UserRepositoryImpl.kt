@@ -1,5 +1,6 @@
 package com.citraweb.qms.data.user
 
+import com.citraweb.qms.MyApp
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.USER_COLLECTION_NAME
 import com.citraweb.qms.utils.await
@@ -89,6 +90,8 @@ class UserRepositoryImpl : UserRepository {
 
     override fun logoutUserInFirestore() {
         firebaseAuth.signOut()
+        MyApp.idDocumentDepartment = null
+        MyApp.idDocumentUser = null
     }
 
     override suspend fun getUserInFirestore(): Result<User?> {

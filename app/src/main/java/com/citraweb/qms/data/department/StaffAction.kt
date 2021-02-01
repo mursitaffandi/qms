@@ -9,6 +9,6 @@ import com.google.android.gms.tasks.Task
 
 interface StaffAction {
     fun getQueryQueue() : FirestoreRecyclerOptions<User?>
-    suspend fun detailDepartment() : Task<Department?>
+    suspend fun detailDepartment() : Task<Department?>?
     suspend fun power(action : StateDepartment) : Result<Void?>
 }

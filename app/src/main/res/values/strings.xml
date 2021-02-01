@@ -58,5 +58,6 @@
     <string name="close">Tutup</string>
     <string name="click_staff_power_off">Tahan Tombol Stop Untuk Menutup Antrian</string>
     <string name="click_staff_power_on">Tahan Tombol Stop Untuk Membuka Antrian</string>
+    <string name="logout">Logout</string>
 
 </resources>

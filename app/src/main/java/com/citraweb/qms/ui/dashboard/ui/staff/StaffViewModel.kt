@@ -32,7 +32,7 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
 
     fun start() {
         viewModelScope.launch {
-            when (val hotDepartment = staffRepositoryImpl.detailDepartment().await()) {
+            when (val hotDepartment = staffRepositoryImpl.detailDepartment()?.await()) {
                 is Result.Success -> {
                     val data = hotDepartment.data
                     _department.value = data

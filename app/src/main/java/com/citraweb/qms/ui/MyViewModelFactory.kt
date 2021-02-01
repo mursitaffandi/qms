@@ -37,7 +37,7 @@ class MyViewModelFactory : ViewModelProvider.Factory {
         ) as T
 
         if (modelClass.isAssignableFrom(StaffViewModel::class.java)) return StaffViewModel(MyApp.instance,
-            StaffRepositoryImpl("xhANVssutCWtgKz79SQXWYuVnBy1")
+            StaffRepositoryImpl()
 //        TODO : change to variable
         ) as T
 

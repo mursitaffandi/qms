@@ -52,7 +52,6 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
 
         binding?.ivPower?.setOnClickListener {
             viewModel.powerClick()
-
         }
     }
 
