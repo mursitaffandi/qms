@@ -31,6 +31,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
                             createUserInFirestore(User(firebaseUser, name))
+                            createDepartmnetInFirestore(User(firebaseUser, name))
                         }
                     }
                     is Result.Error -> {
@@ -40,6 +41,23 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
                         _echo.value = MyApp.instance.getString(R.string.request_canceled)
                     }
                 }
+            }
+        }
+    }
+
+    private suspend fun createDepartmnetInFirestore(user: User) {
+        when (val result = userRepository.createDepartmnetInFirestore(user)) {
+            is Result.Success -> {
+                result.data?.id
+                _echo.value = MyApp.instance.getString(R.string.registration_successful)
+                _currentUserMLD.value = ResultData(success = user, message = R.string.registration_successful)
+            }
+            is Result.Error -> {
+                _currentUserMLD.value = ResultData(message = R.string.register_failed)
+                _echo.value = result.exception.message
+            }
+            is Result.Canceled -> {
+                _echo.value = MyApp.instance.getString(R.string.request_canceled)
             }
         }
     }

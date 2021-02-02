@@ -1,7 +1,9 @@
 package com.citraweb.qms.data.user
 
+import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.utils.Result
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
 
 
 interface UserRepository
@@ -12,6 +14,7 @@ interface UserRepository
         password: String
     ): Result<FirebaseUser?>
     suspend fun createUserInFirestore(user: User): Result<Void?>
+    suspend fun createDepartmnetInFirestore(user: User): Result<DocumentReference?>
     suspend fun loginUserInFirestore(email: String, password: String): Result<FirebaseUser?>
     fun logoutUserInFirestore()
     suspend fun getUserInFirestore(): Result<User?>

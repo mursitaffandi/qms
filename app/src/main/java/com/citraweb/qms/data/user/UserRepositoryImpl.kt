@@ -1,19 +1,22 @@
 package com.citraweb.qms.data.user
 
 import com.citraweb.qms.MyApp
-import com.citraweb.qms.utils.Result
-import com.citraweb.qms.utils.USER_COLLECTION_NAME
-import com.citraweb.qms.utils.await
+import com.citraweb.qms.data.department.Department
+import com.citraweb.qms.utils.*
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
+import java.time.LocalDateTime.now
 
 class UserRepositoryImpl : UserRepository {
     private val userCollection = Firebase.firestore.collection(USER_COLLECTION_NAME)
+    private val departmentCollection = Firebase.firestore.collection(DEPARTMENT_COLLECTION_NAME)
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override suspend fun registerUserFromAuthWithEmailAndPassword(
@@ -63,12 +66,31 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
+    override suspend fun createDepartmnetInFirestore(user: User): Result<DocumentReference?> {
+        return try {
+            departmentCollection.add(
+                Department(
+                    companyId = "companyMboh",
+                    departmentId = "iogn34oing23",
+                    name = "Police Department",
+                    prefix = "P",
+                    staffId = user.userId,
+                    status = StateDepartment.CLOSE.name,
+                )
+            ).await()
+        } catch (exception: Exception) {
+            Result.Error(exception)
+        }
+
+    }
+
     override suspend fun loginUserInFirestore(
         email: String,
         password: String
     ): Result<FirebaseUser?> {
         try {
-            return when (val resultDocumentSnapshot = firebaseAuth.signInWithEmailAndPassword(email, password).await()) {
+            return when (val resultDocumentSnapshot =
+                firebaseAuth.signInWithEmailAndPassword(email, password).await()) {
                 is Result.Success -> {
                     Timber.i("Result.Success")
                     val firebaseUser = resultDocumentSnapshot.data.user
@@ -96,7 +118,8 @@ class UserRepositoryImpl : UserRepository {
 
     override suspend fun getUserInFirestore(): Result<User?> {
         try {
-            return when (val resultDocumentSnapshot = userCollection.document(firebaseAuth.uid!!).get().await()) {
+            return when (val resultDocumentSnapshot =
+                userCollection.document(firebaseAuth.uid!!).get().await()) {
                 is Result.Success -> {
                     Result.Success(resultDocumentSnapshot.data.toObject(User::class.java))
                 }

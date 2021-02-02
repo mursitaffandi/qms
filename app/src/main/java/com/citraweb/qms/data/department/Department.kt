@@ -16,12 +16,12 @@ data class Department(
 
         @get:PropertyName("createdAt")
         @set:PropertyName("createdAt")
-        var createdAt: Timestamp? = null,
+        var createdAt: Timestamp? = Timestamp.now(),
 
 
         @get:PropertyName("updatedAt")
         @set:PropertyName("updatedAt")
-        var updatedAt: Timestamp? = null,
+        var updatedAt: Timestamp? = Timestamp.now(),
 
 
         @get:PropertyName("name")
@@ -55,7 +55,7 @@ data class Department(
 
         @get:PropertyName("amount")
         @set:PropertyName("amount")
-        var amount: Int? = null
+        var amount: Int? = 0
 
 )
 
