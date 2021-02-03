@@ -14,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.ui.login.LoginActivity
@@ -32,8 +33,8 @@ class DashboardActivity : AppCompatActivity() {
             .get(DashboardViewModel::class.java)
         viewModel.start()
 
-        viewModel.currentUserLD.observe(this@DashboardActivity, Observer {
-            val result = it ?: return@Observer
+        viewModel.currentUserLD.observe(this@DashboardActivity, Observer { resultData ->
+            val result = resultData ?: return@Observer
 
             if (result.success == null) {
                 startActivity<LoginActivity> {

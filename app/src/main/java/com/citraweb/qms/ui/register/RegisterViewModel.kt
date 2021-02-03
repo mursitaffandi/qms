@@ -30,8 +30,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
                         userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
-                            createUserInFirestore(User(firebaseUser, name))
-                            createDepartmnetInFirestore(User(firebaseUser, name))
+                            createDepartmnetInFirestore(firebaseUser.uid, User(firebaseUser, name))
                         }
                     }
                     is Result.Error -> {
@@ -45,15 +44,14 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
         }
     }
 
-    private suspend fun createDepartmnetInFirestore(user: User) {
-        when (val result = userRepository.createDepartmnetInFirestore(user)) {
+    private suspend fun createDepartmnetInFirestore(staffId : String, user: User) {
+        when (val result = userRepository.createDepartmnetInFirestore(staffId)) {
             is Result.Success -> {
-                result.data?.id
+                user.departmentId = result.data?.id
+                createUserInFirestore(staffId, user)
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
-                _currentUserMLD.value = ResultData(success = user, message = R.string.registration_successful)
             }
             is Result.Error -> {
-                _currentUserMLD.value = ResultData(message = R.string.register_failed)
                 _echo.value = result.exception.message
             }
             is Result.Canceled -> {
@@ -62,8 +60,8 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
         }
     }
 
-    private suspend fun createUserInFirestore(user: User) {
-        when (val result = userRepository.createUserInFirestore(user)) {
+    private suspend fun createUserInFirestore(id : String, user: User) {
+        when (val result = userRepository.createUserInFirestore(id, user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
                 _currentUserMLD.value = ResultData(success = user, message = R.string.registration_successful)

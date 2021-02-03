@@ -10,10 +10,6 @@ data class Department(
         @set:PropertyName("companyId")
         var companyId: String? = null,
 
-        @get:PropertyName("departmentId")
-        @set:PropertyName("departmentId")
-        var departmentId: String? = null,
-
         @get:PropertyName("createdAt")
         @set:PropertyName("createdAt")
         var createdAt: Timestamp? = Timestamp.now(),

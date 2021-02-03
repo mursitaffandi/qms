@@ -8,10 +8,10 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
+import com.ncorti.slidetoact.SlideToActView
 
 
 class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
@@ -36,7 +36,6 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         memberAdapter = FireMemberAdapter(viewModel.query, this)
 
         binding?.rvStaff?.apply {
@@ -53,10 +52,16 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
         binding?.ivPower?.setOnClickListener {
             viewModel.powerClick()
         }
+
+        binding?.staffSlider?.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener{
+            override fun onSlideComplete(view: SlideToActView) {
+                view.resetSlider()
+            }
+        }
     }
 
     private fun powerHandler(it: ImageView): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun onDestroyView() {

@@ -13,8 +13,8 @@ interface UserRepository
         email: String,
         password: String
     ): Result<FirebaseUser?>
-    suspend fun createUserInFirestore(user: User): Result<Void?>
-    suspend fun createDepartmnetInFirestore(user: User): Result<DocumentReference?>
+    suspend fun createUserInFirestore(id: String,user: User): Result<Void?>
+    suspend fun createDepartmnetInFirestore(staffId : String): Result<DocumentReference?>
     suspend fun loginUserInFirestore(email: String, password: String): Result<FirebaseUser?>
     fun logoutUserInFirestore()
     suspend fun getUserInFirestore(): Result<User?>

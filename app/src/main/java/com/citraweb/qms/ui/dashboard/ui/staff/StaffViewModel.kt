@@ -20,7 +20,7 @@ import java.util.*
 class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: StaffRepositoryImpl) : MyBaseViewModel() {
     private val sekarang = Timestamp(Date())
 
-    val query: FirestoreRecyclerOptions<User?> = staffRepositoryImpl.getQueryQueue()
+    val query = staffRepositoryImpl.getQueryQueue()
 
     private val _department = MutableLiveData<Department>()
     val department: LiveData<Department>

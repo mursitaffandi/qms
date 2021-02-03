@@ -50,6 +50,5 @@ class DepartmentsViewModel(private val repository : QueueRepository) : ViewModel
     }
 
     fun join(it: Queue) {
-        TODO("Not yet implemented")
     }
 }

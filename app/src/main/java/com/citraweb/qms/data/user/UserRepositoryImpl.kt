@@ -58,23 +58,22 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun createUserInFirestore(user: User): Result<Void?> {
+    override suspend fun createUserInFirestore(id : String, user: User): Result<Void?> {
         return try {
-            userCollection.document(user.userId!!).set(user).await()
+            userCollection.document(id).set(user).await()
         } catch (exception: Exception) {
             Result.Error(exception)
         }
     }
 
-    override suspend fun createDepartmnetInFirestore(user: User): Result<DocumentReference?> {
+    override suspend fun createDepartmnetInFirestore(staffId : String): Result<DocumentReference?> {
         return try {
             departmentCollection.add(
                 Department(
                     companyId = "companyMboh",
-                    departmentId = "iogn34oing23",
                     name = "Police Department",
                     prefix = "P",
-                    staffId = user.userId,
+                    staffId = staffId,
                     status = StateDepartment.CLOSE.name,
                 )
             ).await()
@@ -112,8 +111,8 @@ class UserRepositoryImpl : UserRepository {
 
     override fun logoutUserInFirestore() {
         firebaseAuth.signOut()
-        MyApp.idDocumentDepartment = null
-        MyApp.idDocumentUser = null
+        MyApp.setIdDepartment("")
+        MyApp.idDocumentUser = ""
     }
 
     override suspend fun getUserInFirestore(): Result<User?> {
@@ -121,6 +120,7 @@ class UserRepositoryImpl : UserRepository {
             return when (val resultDocumentSnapshot =
                 userCollection.document(firebaseAuth.uid!!).get().await()) {
                 is Result.Success -> {
+                    MyApp.idDocumentUser = firebaseAuth.uid!!
                     Result.Success(resultDocumentSnapshot.data.toObject(User::class.java))
                 }
                 is Result.Error -> {

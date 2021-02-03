@@ -5,6 +5,7 @@ import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.StateDepartment
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.Query
 
 
 interface StaffAction {

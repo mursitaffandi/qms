@@ -32,8 +32,8 @@ class DashboardViewModel(private val repository: UserRepository) : MyBaseViewMod
         viewModelScope.launch {
             when (val result = repository.getUserInFirestore()) {
                 is Result.Success -> {
-                    MyApp.idDocumentUser = result.data?.userId
                     result.data?.let { firestoreUser ->
+                        firestoreUser.departmentId?.let { MyApp.setIdDepartment(it) }
                         _currentUserMLD.value = ResultData(
                                 success = firestoreUser,
                                 message = R.string.login_successful
@@ -52,11 +52,6 @@ class DashboardViewModel(private val repository: UserRepository) : MyBaseViewMod
                 }
             }
 
-            when (val result = getDepartmentId()) {
-                is Result.Success -> {
-                    MyApp.idDocumentDepartment = result.data
-                }
-            }
         }
     }
 }

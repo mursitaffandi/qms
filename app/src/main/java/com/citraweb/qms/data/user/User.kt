@@ -6,10 +6,6 @@ import com.google.firebase.firestore.PropertyName
 
 @Keep
 data class User(
-        @get:PropertyName("userId")
-        @set:PropertyName("userId")
-        var userId: String? = null,
-
         @get:PropertyName("email")
         @set:PropertyName("email")
         var email: String? = null,
@@ -42,7 +38,6 @@ data class User(
             firebaseUser: FirebaseUser,
             name: String,
     ) : this(
-            userId = firebaseUser.uid,
             email = firebaseUser.email,
             name = name,
             departmentId = "",

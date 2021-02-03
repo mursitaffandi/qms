@@ -40,9 +40,7 @@ class ForgetPasswordViewModel(private val userRepository: UserRepository) : View
                 when (val result =
                     userRepository.loginUserInFirestore(email, password)) {
                     is Result.Success -> {
-                        result.data?.let { firebaseUser ->
-                            createUserInFirestore(createUserObject(firebaseUser))
-                        }
+                        result.data?.let {}
                     }
                     is Result.Error -> {
                         _echo.value = result.exception.message
@@ -53,33 +51,6 @@ class ForgetPasswordViewModel(private val userRepository: UserRepository) : View
                 }
             }
         }
-    }
-
-    private suspend fun createUserInFirestore(user: User) {
-        when (val result = userRepository.createUserInFirestore(user)) {
-            is Result.Success -> {
-                _echo.value = MyApp.instance.getString(R.string.login_successful)
-                _currentUserMLD.value = ResultData<User>(success = user, message = R.string.login_successful)
-            }
-            is Result.Error -> {
-                _currentUserMLD.value = ResultData<User>(message = R.string.login_failed)
-                _echo.value = result.exception.message
-            }
-            is Result.Canceled -> {
-                _echo.value = MyApp.instance.getString(R.string.request_canceled)
-            }
-        }
-    }
-
-
-    private fun createUserObject(
-        firebaseUser: FirebaseUser
-    ): User {
-        return User(
-            userId = firebaseUser.uid,
-            name = firebaseUser.displayName,
-            email = firebaseUser.email
-        )
     }
 
     fun onToastShown() {
