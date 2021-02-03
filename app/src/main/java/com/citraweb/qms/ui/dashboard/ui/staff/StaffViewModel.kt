@@ -51,10 +51,11 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
         )
     }
 
-    fun powerLongClick(action: StateDepartment) {
+    fun powerLongClick() {
         launchDataLoad {
             viewModelScope.launch {
-                staffRepositoryImpl.power(action)
+                val action =  _state.value!!.ordinal
+                staffRepositoryImpl.power(StateDepartment.values()[action / 2])
             }
         }
     }

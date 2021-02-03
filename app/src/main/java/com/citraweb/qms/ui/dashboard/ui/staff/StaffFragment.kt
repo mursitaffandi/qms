@@ -6,19 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.citraweb.qms.R
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.ncorti.slidetoact.SlideToActView
 
 
-class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
+class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
     private lateinit var memberAdapter: FireMemberAdapter
+    private val iconPower = listOf(
+            R.drawable.ic_baseline_stop_24,
+            R.drawable.ic_baseline_play_arrow_24
+    )
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -35,7 +41,10 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.state.observe(viewLifecycleOwner, Observer {
+            val powerState = it ?: return@Observer
+            binding?.ivPower?.setImageResource(iconPower[powerState.ordinal])
+        })
         memberAdapter = FireMemberAdapter(viewModel.query, this)
 
         binding?.rvStaff?.apply {
@@ -46,22 +55,19 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick{
         memberAdapter.notifyDataSetChanged()
 
         binding?.ivPower?.setOnLongClickListener {
-            powerHandler(it as ImageView)
+            viewModel.powerLongClick()
+            true
         }
 
         binding?.ivPower?.setOnClickListener {
             viewModel.powerClick()
         }
 
-        binding?.staffSlider?.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener{
+        binding?.staffSlider?.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
             override fun onSlideComplete(view: SlideToActView) {
                 view.resetSlider()
             }
         }
-    }
-
-    private fun powerHandler(it: ImageView): Boolean {
-        return true
     }
 
     override fun onDestroyView() {

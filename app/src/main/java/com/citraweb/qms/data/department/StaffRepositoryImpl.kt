@@ -46,6 +46,9 @@ class StaffRepositoryImpl : StaffAction {
     }
 
     override suspend fun detailDepartment(): Task<Department?>? {
+        return  departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).addSnapshotListener { value, error ->
+
+        }
         return  departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).get().continueWith { p0 -> p0.result?.toObject(Department::class.java) }
     }
 
