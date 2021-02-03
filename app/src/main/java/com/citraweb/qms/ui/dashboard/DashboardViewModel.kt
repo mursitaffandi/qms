@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
-import com.citraweb.qms.data.department.StaffRepositoryImpl.Companion.getDepartmentId
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
 import com.citraweb.qms.utils.MyBaseViewModel
@@ -33,7 +32,10 @@ class DashboardViewModel(private val repository: UserRepository) : MyBaseViewMod
             when (val result = repository.getUserInFirestore()) {
                 is Result.Success -> {
                     result.data?.let { firestoreUser ->
-                        firestoreUser.departmentId?.let { MyApp.setIdDepartment(it) }
+
+                        firestoreUser.departmentId?.let {
+                            repository.setDepartmentId(it)
+                        }
                         _currentUserMLD.value = ResultData(
                                 success = firestoreUser,
                                 message = R.string.login_successful

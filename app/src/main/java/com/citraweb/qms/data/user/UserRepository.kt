@@ -18,4 +18,5 @@ interface UserRepository
     suspend fun loginUserInFirestore(email: String, password: String): Result<FirebaseUser?>
     fun logoutUserInFirestore()
     suspend fun getUserInFirestore(): Result<User?>
+    fun setDepartmentId(it: String)
 }

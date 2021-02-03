@@ -19,15 +19,5 @@ class MyApp : Application() {
     companion object {
         lateinit var instance: MyApp
             private set
-        var idDocumentUser = ""
-        var idDocumentDepartment = ""
-
-        fun setIdDepartment(id : String){
-            idDocumentDepartment = id
-        }
-
-        fun getIdDepartment() : String{
-            return idDocumentDepartment
-        }
     }
 }

@@ -15,6 +15,7 @@ import timber.log.Timber
 import java.time.LocalDateTime.now
 
 class UserRepositoryImpl : UserRepository {
+    private val prefManager = SharePrefManager(MyApp.instance)
     private val userCollection = Firebase.firestore.collection(USER_COLLECTION_NAME)
     private val departmentCollection = Firebase.firestore.collection(DEPARTMENT_COLLECTION_NAME)
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -111,8 +112,7 @@ class UserRepositoryImpl : UserRepository {
 
     override fun logoutUserInFirestore() {
         firebaseAuth.signOut()
-        MyApp.setIdDepartment("")
-        MyApp.idDocumentUser = ""
+        prefManager.clearAll()
     }
 
     override suspend fun getUserInFirestore(): Result<User?> {
@@ -120,7 +120,7 @@ class UserRepositoryImpl : UserRepository {
             return when (val resultDocumentSnapshot =
                 userCollection.document(firebaseAuth.uid!!).get().await()) {
                 is Result.Success -> {
-                    MyApp.idDocumentUser = firebaseAuth.uid!!
+                    prefManager.setUserId(firebaseAuth.uid!!)
                     Result.Success(resultDocumentSnapshot.data.toObject(User::class.java))
                 }
                 is Result.Error -> {
@@ -137,5 +137,8 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
+    override fun setDepartmentId(it: String) {
+        prefManager.setDepartmentId(it)
+    }
 
 }
