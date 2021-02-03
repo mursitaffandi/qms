@@ -10,32 +10,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 class StaffRepositoryImpl : StaffAction {
     private val prefManager = SharePrefManager(MyApp.instance)
-    private val firebaseAuth = FirebaseAuth.getInstance()
     private val db = Firebase.firestore
     private val departmentStore = db.collection(DEPARTMENT_COLLECTION_NAME)
     private val userStore = db.collection(USER_COLLECTION_NAME)
 
-    /*companion object {
-        private val firebaseAuth = FirebaseAuth.getInstance()
-        private val db = Firebase.firestore
-        private val departmentStore = db.collection(DEPARTMENT_COLLECTION_NAME)
-        private val userStore = db.collection(USER_COLLECTION_NAME)
-
-        suspend fun getDepartmentId(): Result<String> {
-            return try {
-                when (val docId = departmentStore.whereEqualTo(DEPARTMENT_STAFFID, firebaseAuth.uid).get().await()) {
-                    is Result.Success -> Result.Success(docId.data.documents[0].id)
-                    is Result.Canceled -> Result.Canceled(docId.exception)
-                    is Result.Error -> Result.Error(docId.exception)
-                }
-            } catch (e: Exception) {
-                Result.Error(e)
-            }
-        }
-    }*/
     override fun getQueryQueue(): FirestoreRecyclerOptions<User?> {
         return FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(
@@ -45,11 +29,18 @@ class StaffRepositoryImpl : StaffAction {
                         User::class.java).build()
     }
 
-    override suspend fun detailDepartment(): Task<Department?>? {
-        return  departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).addSnapshotListener { value, error ->
-
+    override suspend fun detailDepartment(): Flow<Result<Department?>> = callbackFlow {
+        val subscription = departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).addSnapshotListener { value, error ->
+            if (value!!.exists()){
+                val detailDepartment = value.toObject(Department::class.java)
+                offer(Result.Success(detailDepartment))
+            } else {
+                offer(Result.Error(error!!))
+            }
         }
-        return  departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).get().continueWith { p0 -> p0.result?.toObject(Department::class.java) }
+
+        awaitClose { subscription.remove() }
+
     }
 
     override suspend fun power(action: StateDepartment): Result<Void?> {

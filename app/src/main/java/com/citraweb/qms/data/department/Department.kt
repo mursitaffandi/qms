@@ -41,7 +41,7 @@ data class Department(
 
         @get:PropertyName("waitings")
         @set:PropertyName("waitings")
-        var waitings: HashMap<Int, String>? = null,
+        var waitings: List<String>? = null,
 
 
         @get:PropertyName("currentQueue")

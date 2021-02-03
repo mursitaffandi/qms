@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +13,9 @@ import com.citraweb.qms.data.user.User
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.ncorti.slidetoact.SlideToActView
+import com.citraweb.qms.utils.Result
+import com.citraweb.qms.utils.StateDepartment
+import com.citraweb.qms.utils.toas
 
 
 class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
@@ -25,6 +27,8 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
             R.drawable.ic_baseline_stop_24,
             R.drawable.ic_baseline_play_arrow_24
     )
+    private lateinit var powerStatus : StateDepartment
+
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -41,10 +45,27 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.state.observe(viewLifecycleOwner, Observer {
-            val powerState = it ?: return@Observer
-            binding?.ivPower?.setImageResource(iconPower[powerState.ordinal])
+        viewModel.department.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Result.Success -> {
+                    val department = result.data
+                    department?.let {
+                        it.status?.let { it1 ->
+                            powerStatus = StateDepartment.valueOf(it1)
+                            binding?.ivPower?.setImageResource(iconPower[powerStatus.ordinal])
+                        }
+                    }
+                }
+                is Result.Error -> { }
+                is Result.Canceled -> { }
+            }
         })
+
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            val message = it?:return@Observer
+            view.context.toas(message).show()
+        })
+
         memberAdapter = FireMemberAdapter(viewModel.query, this)
 
         binding?.rvStaff?.apply {
@@ -55,12 +76,12 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
         memberAdapter.notifyDataSetChanged()
 
         binding?.ivPower?.setOnLongClickListener {
-            viewModel.powerLongClick()
+            viewModel.powerLongClick(powerStatus)
             true
         }
 
         binding?.ivPower?.setOnClickListener {
-            viewModel.powerClick()
+            viewModel.powerClick(powerStatus)
         }
 
         binding?.staffSlider?.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
