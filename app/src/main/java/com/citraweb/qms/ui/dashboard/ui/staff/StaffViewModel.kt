@@ -45,19 +45,28 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
     fun powerLongClick(powerStatus: StateDepartment) {
         launchDataLoad {
             viewModelScope.launch {
-                staffRepositoryImpl.power(StateDepartment.values()[powerStatus.ordinal / 2])
+                val index =  powerStatus.ordinal + 1
+                when(staffRepositoryImpl.power(StateDepartment.values()[index % 2])){
+                    is Result.Success -> {}
+                    is Result.Error -> {}
+                    is Result.Canceled -> {}
+                }
             }
         }
     }
 
-    /*fun setQueue() {
+    fun setQueue(newIndex : Int)  {
         launchDataLoad {
             viewModelScope.launch {
 //            TODO : if @currentQueue not last, update @currentQueue++
-                staffRepositoryImpl.
+                when(staffRepositoryImpl.nextQueue(newIndex)){
+                    is Result.Success -> { }
+                    is Result.Error -> {}
+                    is Result.Canceled -> {}
+                }
             }
         }
-    }*/
+    }
 
 //    TODO : observer @currentQueue if has change, push fcm notif to user that has id @currentQueue
 }

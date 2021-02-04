@@ -11,4 +11,6 @@ interface StaffAction {
     fun getQueryQueue() : FirestoreRecyclerOptions<User?>
     suspend fun detailDepartment() : Flow<Result<Department?>>
     suspend fun power(action : StateDepartment) : Result<Void?>
+    suspend fun nextQueue(newIndex : Int) : Result<Void?>
+    suspend fun removeMember() : Result<Void?>
 }

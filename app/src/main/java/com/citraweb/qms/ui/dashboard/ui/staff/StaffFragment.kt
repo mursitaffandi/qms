@@ -12,10 +12,10 @@ import com.citraweb.qms.R
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
-import com.ncorti.slidetoact.SlideToActView
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.StateDepartment
 import com.citraweb.qms.utils.toas
+import com.ncorti.slidetoact.SlideToActView
 
 
 class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
@@ -28,6 +28,8 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
             R.drawable.ic_baseline_play_arrow_24
     )
     private lateinit var powerStatus : StateDepartment
+    private var currentIndexWaiting = 0
+    private var amountQueue = 0
 
 
     override fun onCreateView(
@@ -45,7 +47,7 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.department.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.department.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Result.Success -> {
                     val department = result.data
@@ -54,15 +56,28 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
                             powerStatus = StateDepartment.valueOf(it1)
                             binding?.ivPower?.setImageResource(iconPower[powerStatus.ordinal])
                         }
+
+                        it.currentQueue?.let { it1 ->
+                            if (currentIndexWaiting < it1) {
+                                binding?.staffSlider?.resetSlider()
+                                currentIndexWaiting = it1
+                            }
+                        }
+
+                        it.waitings?.let { it1 ->
+                            amountQueue = it1.size
+                        }
                     }
                 }
-                is Result.Error -> { }
-                is Result.Canceled -> { }
+                is Result.Error -> {
+                }
+                is Result.Canceled -> {
+                }
             }
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
-            val message = it?:return@Observer
+            val message = it ?: return@Observer
             view.context.toas(message).show()
         })
 
@@ -80,15 +95,26 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
             true
         }
 
+
+
         binding?.ivPower?.setOnClickListener {
             viewModel.powerClick(powerStatus)
         }
 
         binding?.staffSlider?.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
             override fun onSlideComplete(view: SlideToActView) {
-                view.resetSlider()
+                if (currentIndexWaiting < amountQueue) {
+                    val nextIndex = currentIndexWaiting + 1
+                    viewModel.setQueue(nextIndex)
+                    binding?.staffSlider?.bumpVibration = 50
+                }
             }
         }
+
+
+
+
+
     }
 
     override fun onDestroyView() {
@@ -111,6 +137,6 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
     }
 
     override fun size(itemCount: Int) {
-        binding?.staffSlider?.isLocked = itemCount > 0
+        binding?.staffSlider?.isLocked = itemCount < 2
     }
 }
