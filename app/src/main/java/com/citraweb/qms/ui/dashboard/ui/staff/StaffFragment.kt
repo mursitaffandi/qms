@@ -20,27 +20,29 @@ import com.ncorti.slidetoact.SlideToActView
 
 class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
+    private lateinit var departmentName: String
+    private lateinit var company: String
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
     private lateinit var memberAdapter: FireMemberAdapter
     private val iconPower = listOf(
-            R.drawable.ic_baseline_stop_24,
-            R.drawable.ic_baseline_play_arrow_24
+        R.drawable.ic_baseline_stop_24,
+        R.drawable.ic_baseline_play_arrow_24
     )
-    private lateinit var powerStatus : StateDepartment
+    private lateinit var powerStatus: StateDepartment
     private var currentIndexWaiting = 0
     private var amountQueue = 0
 
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val fragmentBinding = FragmentStaffBinding.inflate(inflater, container, false)
         binding = fragmentBinding
         viewModel = ViewModelProvider(this, MyViewModelFactory())
-                .get(StaffViewModel::class.java)
+            .get(StaffViewModel::class.java)
 
         return fragmentBinding.root
     }
@@ -66,6 +68,14 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
                         it.waitings?.let { it1 ->
                             amountQueue = it1.size
+                        }
+
+                        it.companyId?.let { it1 ->
+                            company = it1
+                        }
+
+                        it.name?.let { it1 ->
+                            departmentName = it1
                         }
                     }
                 }
@@ -99,15 +109,16 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
             viewModel.powerClick(powerStatus)
         }
 
-        binding?.staffSlider?.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
-            override fun onSlideComplete(view: SlideToActView) {
-                if (currentIndexWaiting < amountQueue) {
-                    val nextIndex = currentIndexWaiting + 1
-                    viewModel.setQueue(nextIndex)
-                    binding?.staffSlider?.bumpVibration = 50
+        binding?.staffSlider?.onSlideCompleteListener =
+            object : SlideToActView.OnSlideCompleteListener {
+                override fun onSlideComplete(view: SlideToActView) {
+                    if (currentIndexWaiting < amountQueue) {
+                        val nextIndex = currentIndexWaiting + 1
+                        viewModel.setQueue(nextIndex)
+                        binding?.staffSlider?.bumpVibration = 50
+                    }
                 }
             }
-        }
     }
 
     override fun onDestroyView() {
@@ -126,7 +137,7 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
     }
 
     override fun click(S: User, idSnapshot: String) {
-        TODO("Not yet implemented")
+        viewModel.call(S, departmentName, company)
     }
 
     override fun size(itemCount: Int) {
