@@ -1,7 +1,6 @@
 package com.citraweb.qms.service
 
-import android.widget.Toast
-import com.google.firebase.iid.FirebaseInstanceId
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
@@ -11,8 +10,7 @@ class MyMessagingService : FirebaseMessagingService() {
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
         // Get updated InstanceID token.
-        // Get updated InstanceID token.
-        Timber.d( "Refreshed token: $p0")
+        Log.d("onNewToken", "Refreshed token: $p0")
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -28,7 +26,7 @@ class MyMessagingService : FirebaseMessagingService() {
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Timber.d("From: %s", remoteMessage.from)
+        Log.d("onNewMessage","From: ${remoteMessage.from}")
 
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
