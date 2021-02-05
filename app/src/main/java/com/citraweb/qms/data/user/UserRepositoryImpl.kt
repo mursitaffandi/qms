@@ -3,6 +3,7 @@ package com.citraweb.qms.data.user
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.utils.*
+import com.citraweb.qms.utils.SharePrefManager.Companion.ID_USER
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -15,11 +16,33 @@ import timber.log.Timber
 import java.time.LocalDateTime.now
 
 class UserRepositoryImpl : UserRepository {
-    private val prefManager = SharePrefManager(MyApp.instance)
-    private val userCollection = Firebase.firestore.collection(USER_COLLECTION_NAME)
     private val departmentCollection = Firebase.firestore.collection(DEPARTMENT_COLLECTION_NAME)
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    companion object{
+        private val userCollection = Firebase.firestore.collection(USER_COLLECTION_NAME)
+        private val prefManager = SharePrefManager(MyApp.instance)
+
+        suspend fun updateFcmToken(newToken : String) : Result<Void?>{
+            return try {
+                when(val update = userCollection.document(prefManager.getFromPreference(ID_USER)).update(
+                    USER_FCM , newToken
+                ).await()){
+                    is Result.Success -> {
+                        Result.Success(update.data)
+                    }
+                    is Result.Error -> {
+                        Result.Error(update.exception)
+                    }
+                    is Result.Canceled -> {
+                        Result.Canceled(update.exception)
+                    }
+                }
+            } catch (exception: Exception) {
+                Result.Error(exception)
+            }
+        }
+    }
     override suspend fun registerUserFromAuthWithEmailAndPassword(
         name: String,
         email: String,
