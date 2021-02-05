@@ -95,8 +95,6 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
             true
         }
 
-
-
         binding?.ivPower?.setOnClickListener {
             viewModel.powerClick(powerStatus)
         }
@@ -110,11 +108,6 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
                 }
             }
         }
-
-
-
-
-
     }
 
     override fun onDestroyView() {

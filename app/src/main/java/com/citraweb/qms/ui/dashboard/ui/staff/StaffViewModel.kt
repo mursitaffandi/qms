@@ -60,7 +60,7 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
             viewModelScope.launch {
 //            TODO : if @currentQueue not last, update @currentQueue++
                 when(staffRepositoryImpl.nextQueue(newIndex)){
-                    is Result.Success -> { }
+                    is Result.Success -> {}
                     is Result.Error -> {}
                     is Result.Canceled -> {}
                 }
