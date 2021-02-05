@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.databinding.ActivityLoginBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.ui.dashboard.DashboardActivity
+import com.citraweb.qms.ui.forgetpassword.ForgetPasswordActivity
+import com.citraweb.qms.ui.register.RegisterActivity
 import com.citraweb.qms.utils.afterTextChanged
 import com.citraweb.qms.utils.startActivity
 import com.citraweb.qms.utils.toas
@@ -26,11 +28,11 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, MyViewModelFactory())
             .get(LoginViewModel::class.java)
 
-        viewModel.registerFormState.observe(this@LoginActivity, Observer {
+        viewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            binding.btnRegisterLogin.isEnabled = loginState.isDataValid
+            binding.btnLogin.isEnabled = loginState.isDataValid
 
             binding.tilLoginEmail.error = null
             binding.tilLoginPassword.error = null
@@ -43,13 +45,11 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.currentUserLD.observe(this@LoginActivity, Observer {
+        viewModel.currentFireUserLD.observe(this@LoginActivity, Observer {
             val result = it ?: return@Observer
 
             binding.spinnerLogin.visibility = View.GONE
-            if (result.message != null) {
-                toas(getString(result.message)).show()
-            }
+            toas(getString(result.message)).show()
             if (result.success != null) {
                 startActivity<DashboardActivity>()
                 finish()
@@ -76,20 +76,14 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        viewModel.loginUserFromAuthWithEmailAndPassword(
-                            binding.tietLoginEmail.text.toString(),
-                            binding.tietLoginPassword.text.toString()
-                        )
+                        doLogin()
                 }
                 false
             }
 
-            binding.btnRegisterLogin.setOnClickListener {
+            binding.btnLogin.setOnClickListener {
                 binding.spinnerLogin.visibility = View.VISIBLE
-                viewModel.loginUserFromAuthWithEmailAndPassword(
-                    binding.tietLoginEmail.text.toString(),
-                    binding.tietLoginPassword.text.toString()
-                )
+                doLogin()
             }
         }
 
@@ -105,5 +99,21 @@ class LoginActivity : AppCompatActivity() {
                 binding.spinnerLogin.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
+
+        binding.tvForgetpassword.setOnClickListener {
+            startActivity<ForgetPasswordActivity>()
+        }
+
+        binding.tvRegisternow.setOnClickListener {
+            startActivity<RegisterActivity>()
+        }
+
+    }
+
+    fun doLogin(){
+        viewModel.loginUserFromAuthWithEmailAndPassword(
+                binding.tietLoginEmail.text.toString(),
+                binding.tietLoginPassword.text.toString()
+        )
     }
 }

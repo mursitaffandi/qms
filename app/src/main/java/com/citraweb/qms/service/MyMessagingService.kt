@@ -1,6 +1,5 @@
 package com.citraweb.qms.service
 
-import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
@@ -10,7 +9,8 @@ class MyMessagingService : FirebaseMessagingService() {
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
         // Get updated InstanceID token.
-        Log.d("onNewToken", "Refreshed token: $p0")
+        // Get updated InstanceID token.
+        Timber.d( "Refreshed token: $p0")
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the

@@ -11,7 +11,6 @@ class MyApp : Application() {
         instance = this
 
         // This will initialise Timber
-        // This will initialise Timber
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         }

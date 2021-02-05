@@ -52,5 +52,12 @@
     <string name="unknow_user">User not found</string>
     <string name="request_password">Request New Password</string>
     <string name="confirm_join">Confirm Join</string>
+    <string name="success_departmens">success</string>
+    <string name="fail_departmens">fail</string>
+    <string name="open">Buka</string>
+    <string name="close">Tutup</string>
+    <string name="click_staff_power_off">Tahan Tombol Stop Untuk Menutup Antrian</string>
+    <string name="click_staff_power_on">Tahan Tombol Stop Untuk Membuka Antrian</string>
+    <string name="logout">Logout</string>
 
 </resources>

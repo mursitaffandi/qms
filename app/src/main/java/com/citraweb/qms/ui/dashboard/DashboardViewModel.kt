@@ -2,54 +2,57 @@ package com.citraweb.qms.ui.dashboard
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
+import com.citraweb.qms.utils.MyBaseViewModel
+import com.citraweb.qms.utils.Result
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(private val repository : UserRepository) : ViewModel(){
-    private val _echo = MutableLiveData<String?>()
-    val toast: LiveData<String?>
-        get() = _echo
-
-    private val _loading = MutableLiveData(false)
-    val spinner: LiveData<Boolean>
-        get() = _loading
+class DashboardViewModel(private val repository: UserRepository) : MyBaseViewModel() {
 
     private val _currentUserMLD = MutableLiveData<ResultData<User>>()
     val currentUserLD: LiveData<ResultData<User>>
         get() = _currentUserMLD
 
-    fun start(){
+    fun start() {
         checkCredential()
     }
 
-    fun revoke(){
-        viewModelScope.launch {
-            repository.logoutUserInFirestore()
-        }
+    fun revoke() {
+        repository.logoutUserInFirestore()
         checkCredential()
     }
 
-    private fun checkCredential(){
+    private fun checkCredential() {
         viewModelScope.launch {
-            val user = repository.getUserInFirestore()
-            if (user!=null)
-                _currentUserMLD.value = ResultData<User>(
-                        success = User(
-                                id = user.uid,
-                                name = user.displayName,
-                                email = user.email
-                        ),
-                        message = R.string.login_successful
-                )
-             else _currentUserMLD.value = ResultData<User>(
-                    success = null,
-                    message = R.string.unknow_user
-             )
+            when (val result = repository.getUserInFirestore()) {
+                is Result.Success -> {
+                    result.data?.let { firestoreUser ->
+
+                        firestoreUser.departmentId?.let {
+                            repository.setDepartmentId(it)
+                        }
+                        _currentUserMLD.value = ResultData(
+                                success = firestoreUser,
+                                message = R.string.login_successful
+                        )
+                    }
+                }
+                is Result.Error -> {
+                    _currentUserMLD.value = ResultData(
+                            success = null,
+                            message = R.string.logout
+                    )
+                    _echo.value = result.exception.message
+                }
+                is Result.Canceled -> {
+                    _echo.value = MyApp.instance.getString(R.string.request_canceled)
+                }
+            }
 
         }
     }

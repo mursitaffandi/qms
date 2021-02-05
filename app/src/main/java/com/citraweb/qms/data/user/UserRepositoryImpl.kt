@@ -1,17 +1,23 @@
 package com.citraweb.qms.data.user
 
-import com.citraweb.qms.utils.Result
-import com.citraweb.qms.utils.USER_COLLECTION_NAME
-import com.citraweb.qms.utils.await
+import com.citraweb.qms.MyApp
+import com.citraweb.qms.data.department.Department
+import com.citraweb.qms.utils.*
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import timber.log.Timber
+import java.time.LocalDateTime.now
 
 class UserRepositoryImpl : UserRepository {
-    private val firestoreInstance = FirebaseFirestore.getInstance()
-    private val userCollection = firestoreInstance.collection(USER_COLLECTION_NAME)
+    private val prefManager = SharePrefManager(MyApp.instance)
+    private val userCollection = Firebase.firestore.collection(USER_COLLECTION_NAME)
+    private val departmentCollection = Firebase.firestore.collection(DEPARTMENT_COLLECTION_NAME)
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override suspend fun registerUserFromAuthWithEmailAndPassword(
@@ -53,12 +59,29 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun createUserInFirestore(user: User): Result<Void?> {
+    override suspend fun createUserInFirestore(id : String, user: User): Result<Void?> {
         return try {
-            userCollection.document(user.id!!).set(user).await()
+            userCollection.document(id).set(user).await()
         } catch (exception: Exception) {
             Result.Error(exception)
         }
+    }
+
+    override suspend fun createDepartmnetInFirestore(staffId : String): Result<DocumentReference?> {
+        return try {
+            departmentCollection.add(
+                Department(
+                    companyId = "companyMboh",
+                    name = "Police Department",
+                    prefix = "P",
+                    staffId = staffId,
+                    status = StateDepartment.CLOSE.name,
+                )
+            ).await()
+        } catch (exception: Exception) {
+            Result.Error(exception)
+        }
+
     }
 
     override suspend fun loginUserInFirestore(
@@ -89,9 +112,33 @@ class UserRepositoryImpl : UserRepository {
 
     override fun logoutUserInFirestore() {
         firebaseAuth.signOut()
+        prefManager.clearAll()
     }
 
-    override fun getUserInFirestore(): FirebaseUser? {
-        return firebaseAuth.currentUser
+    override suspend fun getUserInFirestore(): Result<User?> {
+        try {
+            return when (val resultDocumentSnapshot =
+                userCollection.document(firebaseAuth.uid!!).get().await()) {
+                is Result.Success -> {
+                    prefManager.setUserId(firebaseAuth.uid!!)
+                    Result.Success(resultDocumentSnapshot.data.toObject(User::class.java))
+                }
+                is Result.Error -> {
+                    Timber.e("${resultDocumentSnapshot.exception}")
+                    Result.Error(resultDocumentSnapshot.exception)
+                }
+                is Result.Canceled -> {
+                    Timber.e("${resultDocumentSnapshot.exception}")
+                    Result.Canceled(resultDocumentSnapshot.exception)
+                }
+            }
+        } catch (exception: Exception) {
+            return Result.Error(exception)
+        }
     }
+
+    override fun setDepartmentId(it: String) {
+        prefManager.setDepartmentId(it)
+    }
+
 }

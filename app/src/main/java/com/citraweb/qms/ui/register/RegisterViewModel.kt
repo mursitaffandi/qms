@@ -2,30 +2,17 @@ package com.citraweb.qms.ui.register
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
-import com.citraweb.qms.utils.Result
-import com.citraweb.qms.utils.isEmailValid
-import com.citraweb.qms.utils.isPasswordValid
-import com.citraweb.qms.utils.isUserNameValid
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.Job
+import com.citraweb.qms.utils.*
 import kotlinx.coroutines.launch
 
 
-class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
-    private val _echo = MutableLiveData<String?>()
-    val toast: LiveData<String?>
-        get() = _echo
-
-    private val _loading = MutableLiveData(false)
-    val spinner: LiveData<Boolean>
-        get() = _loading
+class RegisterViewModel(private val userRepository: UserRepository) : MyBaseViewModel() {
 
     private val _currentUserMLD = MutableLiveData<ResultData<User>>()
     val currentUserLD: LiveData<ResultData<User>>
@@ -43,7 +30,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
                         userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
-                            createUserInFirestore(createUserObject(firebaseUser, name, email))
+                            createDepartmnetInFirestore(firebaseUser.uid, User(firebaseUser, name))
                         }
                     }
                     is Result.Error -> {
@@ -57,14 +44,14 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         }
     }
 
-    private suspend fun createUserInFirestore(user: User) {
-        when (val result = userRepository.createUserInFirestore(user)) {
+    private suspend fun createDepartmnetInFirestore(staffId : String, user: User) {
+        when (val result = userRepository.createDepartmnetInFirestore(staffId)) {
             is Result.Success -> {
+                user.departmentId = result.data?.id
+                createUserInFirestore(staffId, user)
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
-                _currentUserMLD.value = ResultData<User>(success = user, message = R.string.registration_successful)
             }
             is Result.Error -> {
-                _currentUserMLD.value = ResultData<User>(message = R.string.register_failed)
                 _echo.value = result.exception.message
             }
             is Result.Canceled -> {
@@ -73,32 +60,18 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
         }
     }
 
-
-    private fun createUserObject(
-            firebaseUser: FirebaseUser,
-            name: String,
-            email: String
-    ): User {
-        return User(
-                id = firebaseUser.uid,
-                name = name,
-                email = email
-        )
-    }
-
-    fun onToastShown() {
-        _echo.value = null
-    }
-
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return viewModelScope.launch {
-            try {
-                _loading.value = true
-                block()
-            } catch (error: Throwable) {
-                _echo.value = error.message
-            } finally {
-                _loading.value = false
+    private suspend fun createUserInFirestore(id : String, user: User) {
+        when (val result = userRepository.createUserInFirestore(id, user)) {
+            is Result.Success -> {
+                _echo.value = MyApp.instance.getString(R.string.registration_successful)
+                _currentUserMLD.value = ResultData(success = user, message = R.string.registration_successful)
+            }
+            is Result.Error -> {
+                _currentUserMLD.value = ResultData(message = R.string.register_failed)
+                _echo.value = result.exception.message
+            }
+            is Result.Canceled -> {
+                _echo.value = MyApp.instance.getString(R.string.request_canceled)
             }
         }
     }

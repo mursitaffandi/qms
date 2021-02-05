@@ -172,7 +172,7 @@
 
     <!--btn_register_login-->
     <Button
-        android:id="@+id/btn_register_login"
+        android:id="@+id/btn_register"
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:layout_marginTop="@dimen/margin_medium"
@@ -207,7 +207,7 @@
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_register_login" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_register" />
 
     <ProgressBar
         android:id="@+id/spinner_register"

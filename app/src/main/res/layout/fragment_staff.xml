@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.ui.gallery.GalleryFragment">
+    tools:context=".ui.dashboard.ui.staff.StaffFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rv_staff"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView5"
+        app:layout_constraintBottom_toTopOf="@+id/iv_power"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_member" />
 
     <com.ncorti.slidetoact.SlideToActView
-        android:id="@+id/example"
+        android:id="@+id/staff_slider"
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
@@ -26,13 +26,13 @@
         android:layout_marginBottom="8dp"
         app:outer_color="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView5"
+        app:layout_constraintEnd_toStartOf="@+id/iv_power"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/rv_staff"
         app:text="Next Call" />
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/iv_power"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginTop="8dp"
@@ -41,6 +41,6 @@
         android:src="@drawable/ic_baseline_stop_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_staff" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

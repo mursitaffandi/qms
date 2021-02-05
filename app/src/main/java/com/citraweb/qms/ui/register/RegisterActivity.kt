@@ -30,7 +30,7 @@ class RegisterActivity : AppCompatActivity() {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            binding.btnRegisterLogin.isEnabled = loginState.isDataValid
+            binding.btnRegister.isEnabled = loginState.isDataValid
 
             binding.tilRegisterName.error = null
             binding.tilRegisterEmail.error = null
@@ -56,69 +56,38 @@ class RegisterActivity : AppCompatActivity() {
             val result = it ?: return@Observer
 
             binding.spinnerRegister.visibility = View.GONE
-            if (result.message != null) {
-                toas(getString(result.message)).show()
-            }
+            toas(getString(result.message)).show()
             if (result.success != null) {
                 startActivity<DashboardActivity>()
                 finish()
             }
         })
         binding.tietRegisterName.afterTextChanged {
-            viewModel.registerDataChanged(
-                    binding.tietRegisterName.text.toString(),
-                    binding.tietRegisterEmail.text.toString(),
-                    binding.tietRegisterPassword.text.toString(),
-                    binding.tietRegisterConfirmPassword.text.toString()
-            )
+            fieldValidation()
         }
         binding.tietRegisterEmail.afterTextChanged {
-            viewModel.registerDataChanged(
-                    binding.tietRegisterName.text.toString(),
-                    binding.tietRegisterEmail.text.toString(),
-                    binding.tietRegisterPassword.text.toString(),
-                    binding.tietRegisterConfirmPassword.text.toString()
-            )
+            fieldValidation()
         }
 
         binding.tietRegisterPassword.afterTextChanged {
-            viewModel.registerDataChanged(
-                    binding.tietRegisterName.text.toString(),
-                    binding.tietRegisterEmail.text.toString(),
-                    binding.tietRegisterPassword.text.toString(),
-                    binding.tietRegisterConfirmPassword.text.toString()
-            )
+            fieldValidation()
         }
 
         binding.tietRegisterConfirmPassword.apply {
             afterTextChanged {
-                viewModel.registerDataChanged(
-                        binding.tietRegisterName.text.toString(),
-                        binding.tietRegisterEmail.text.toString(),
-                        binding.tietRegisterPassword.text.toString(),
-                        binding.tietRegisterConfirmPassword.text.toString()
-                )
+                fieldValidation()
             }
 
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
-                    EditorInfo.IME_ACTION_DONE ->
-                        viewModel.registerUserFromAuthWithEmailAndPassword(
-                                binding.tietRegisterName.text.toString(),
-                                binding.tietRegisterEmail.text.toString(),
-                                binding.tietRegisterPassword.text.toString()
-                        )
+                    EditorInfo.IME_ACTION_DONE -> registration()
                 }
                 false
             }
 
-            binding.btnRegisterLogin.setOnClickListener {
+            binding.btnRegister.setOnClickListener {
                 binding.spinnerRegister.visibility = View.VISIBLE
-                viewModel.registerUserFromAuthWithEmailAndPassword(
-                        binding.tietRegisterName.text.toString(),
-                        binding.tietRegisterEmail.text.toString(),
-                        binding.tietRegisterPassword.text.toString()
-                )
+                registration()
             }
         }
 
@@ -134,5 +103,22 @@ class RegisterActivity : AppCompatActivity() {
                 binding.spinnerRegister.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
+    }
+
+    private fun fieldValidation(){
+        viewModel.registerDataChanged(
+                binding.tietRegisterName.text.toString(),
+                binding.tietRegisterEmail.text.toString(),
+                binding.tietRegisterPassword.text.toString(),
+                binding.tietRegisterConfirmPassword.text.toString()
+        )
+    }
+
+    private fun registration(){
+        viewModel.registerUserFromAuthWithEmailAndPassword(
+                binding.tietRegisterName.text.toString(),
+                binding.tietRegisterEmail.text.toString(),
+                binding.tietRegisterPassword.text.toString()
+        )
     }
 }
