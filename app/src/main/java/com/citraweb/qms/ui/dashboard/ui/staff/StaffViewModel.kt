@@ -84,11 +84,12 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
             }
         }
     }
+    // Instantiate the RequestQueue.
+    val queue = Volley.newRequestQueue(MyApp.instance)
+    val url = "https://fcm.googleapis.com/fcm/send"
 
     fun call(S: User, deparmentName: String, companyName: String) {
-        // Instantiate the RequestQueue.
-        val queue = Volley.newRequestQueue(MyApp.instance)
-        val url = "https://fcm.googleapis.com/fcm/send"
+
 
         val payload = FCMPayload(S.fcm?: "", Data(
             departmentName = deparmentName,
@@ -99,7 +100,11 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
         val mRequestBody = Gson().toJson(payload).toString()
 
 // Request a string response from the provided URL.
-        val stringRequest = object : StringRequest(Request.Method.POST, url, { _ -> }, {}){
+        val stringRequest = object : StringRequest(Method.POST, url, { response ->
+            Timber.d(response.toString())
+        }, {
+            Timber.e(it)
+        }){
             override fun getHeaders(): MutableMap<String, String> {
                 return mutableMapOf(
                         "Content-Type" to "application/json",

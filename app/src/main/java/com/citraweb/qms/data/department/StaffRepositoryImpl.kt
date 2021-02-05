@@ -7,10 +7,12 @@ import com.citraweb.qms.utils.SharePrefManager.Companion.ID_DEPARTMENT
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
+@ExperimentalCoroutinesApi
 class StaffRepositoryImpl : StaffAction {
     private val prefManager = SharePrefManager(MyApp.instance)
     private val db = Firebase.firestore
@@ -75,7 +77,7 @@ class StaffRepositoryImpl : StaffAction {
         return try {
             when (val members = userStore.whereEqualTo(USER_TICKETPARENT, prefManager.getFromPreference(ID_DEPARTMENT)).get().await()) {
                 is Result.Success -> {
-                    var batch = db.batch()
+                    val batch = db.batch()
                     members.data.documents.forEach { docSnap ->
                         batch.update(
                                 userStore.document(docSnap.id),
