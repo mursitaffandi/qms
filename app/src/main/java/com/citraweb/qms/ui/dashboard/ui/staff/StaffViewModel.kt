@@ -85,7 +85,7 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
         }
     }
     // Instantiate the RequestQueue.
-    val queue = Volley.newRequestQueue(MyApp.instance)
+    val queue: RequestQueue = Volley.newRequestQueue(MyApp.instance)
     val url = "https://fcm.googleapis.com/fcm/send"
 
     fun call(S: User, deparmentName: String, companyName: String) {

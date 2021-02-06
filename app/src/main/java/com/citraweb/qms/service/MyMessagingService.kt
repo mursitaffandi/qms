@@ -1,8 +1,14 @@
 package com.citraweb.qms.service
 
 import android.util.Log
+import android.widget.Toast
+import com.citraweb.qms.data.user.UserRepositoryImpl.Companion.updateFcmToken
+import com.citraweb.qms.utils.Result
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -10,8 +16,7 @@ class MyMessagingService : FirebaseMessagingService() {
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
         // Get updated InstanceID token.
-        // Get updated InstanceID token.
-        Timber.d( "Refreshed token: $p0")
+        Log.d("onNewToken", "Refreshed token: $p0")
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -21,6 +26,15 @@ class MyMessagingService : FirebaseMessagingService() {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
 //       TODO : sendRegistrationToServer(refreshedToken)
+        GlobalScope.launch {
+            when(val up = updateFcmToken(p0)){
+                is Result.Success -> {
+                    Timber.d("updateFcmToken success")
+                }
+                is Result.Error -> {Timber.e(up.exception)}
+                is Result.Canceled -> {Timber.e(up.exception)}
+            }
+        }
     }
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // ...
