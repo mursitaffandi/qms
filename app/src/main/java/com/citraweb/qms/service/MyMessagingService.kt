@@ -1,10 +1,8 @@
 package com.citraweb.qms.service
 
 import android.util.Log
-import android.widget.Toast
 import com.citraweb.qms.data.user.UserRepositoryImpl.Companion.updateFcmToken
 import com.citraweb.qms.utils.Result
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.GlobalScope
