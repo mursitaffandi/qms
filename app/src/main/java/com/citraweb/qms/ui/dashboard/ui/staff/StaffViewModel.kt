@@ -27,7 +27,6 @@ import java.util.*
 
 
 class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: StaffRepositoryImpl) : MyBaseViewModel() {
-    private val now = Timestamp(Date())
 
     val query = staffRepositoryImpl.getQueryQueue()
 
@@ -55,7 +54,6 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
 
     fun powerLongClick(powerStatus: StateDepartment) {
         launchDataLoad {
-            viewModelScope.launch {
                 val index =  powerStatus.ordinal + 1
                 when(staffRepositoryImpl.power(StateDepartment.values()[index % 2])){
                     is Result.Success -> {
@@ -64,15 +62,13 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
                     }
                     is Result.Canceled -> {
                     }
-                }
             }
         }
     }
 
     fun setQueue(newIndex: Int)  {
         launchDataLoad {
-            viewModelScope.launch {
-//            TODO : if @currentQueue not last, update @currentQueue++
+        //            TODO : if @currentQueue not last, update @currentQueue++
                 when(staffRepositoryImpl.nextQueue(newIndex)){
                     is Result.Success -> {
                     }
@@ -80,7 +76,6 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
                     }
                     is Result.Canceled -> {
                     }
-                }
             }
         }
     }
@@ -137,9 +132,7 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
 
 // Add the request to the RequestQueue.
         launchDataLoad {
-            viewModelScope.launch {
                 queue.add(stringRequest)
-            }
         }
     }
 

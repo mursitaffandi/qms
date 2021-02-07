@@ -10,6 +10,8 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.EditText
 import android.widget.Toast
+import com.google.firebase.Timestamp
+import java.util.*
 
 // A placeholder username validation check
 fun isUserNameValid(username: String): Boolean {
@@ -78,4 +80,8 @@ startActivity<MainActivity>{
 * */
 fun Context.toas(msg : String): Toast {
     return Toast.makeText(this, msg, Toast.LENGTH_LONG)
+}
+
+fun now(): Timestamp {
+  return Timestamp(Date())
 }

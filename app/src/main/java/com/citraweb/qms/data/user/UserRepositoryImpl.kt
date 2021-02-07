@@ -4,6 +4,7 @@ import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.utils.*
 import com.citraweb.qms.utils.SharePrefManager.Companion.ID_USER
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -43,6 +44,7 @@ class UserRepositoryImpl : UserRepository {
             }
         }
     }
+
     override suspend fun registerUserFromAuthWithEmailAndPassword(
         name: String,
         email: String,

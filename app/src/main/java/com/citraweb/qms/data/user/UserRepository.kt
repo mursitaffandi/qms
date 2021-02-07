@@ -2,6 +2,7 @@ package com.citraweb.qms.data.user
 
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.utils.Result
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 

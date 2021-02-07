@@ -31,7 +31,6 @@ class LoginViewModel(private val userRepository: UserRepository) : MyBaseViewMod
     //Email
     fun loginUserFromAuthWithEmailAndPassword(email: String, password: String) {
         launchDataLoad {
-            viewModelScope.launch {
                 when (val result = userRepository.loginUserInFirestore(email, password)) {
                     is Result.Success -> {
                         _echo.value = MyApp.instance.getString(R.string.registration_successful)
@@ -46,7 +45,6 @@ class LoginViewModel(private val userRepository: UserRepository) : MyBaseViewMod
                     is Result.Canceled -> {
                         _echo.value = MyApp.instance.getString(R.string.request_canceled)
                     }
-                }
             }
         }
     }

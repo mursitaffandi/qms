@@ -25,7 +25,6 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
     //Email
     fun registerUserFromAuthWithEmailAndPassword(name: String, email: String, password: String) {
         launchDataLoad {
-            viewModelScope.launch {
                 when (val result =
                         userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
                     is Result.Success -> {
@@ -39,7 +38,6 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
                     is Result.Canceled -> {
                         _echo.value = MyApp.instance.getString(R.string.request_canceled)
                     }
-                }
             }
         }
     }
