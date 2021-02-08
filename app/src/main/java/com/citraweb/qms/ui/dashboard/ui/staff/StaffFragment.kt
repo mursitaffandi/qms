@@ -79,10 +79,8 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
                         }
                     }
                 }
-                is Result.Error -> {
-                }
-                is Result.Canceled -> {
-                }
+                is Result.Error -> {}
+                is Result.Canceled -> {}
             }
         })
 

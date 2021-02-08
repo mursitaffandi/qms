@@ -15,6 +15,7 @@ import timber.log.Timber
 class FireDepartmentAdapter(options: FirestoreRecyclerOptions<Department?>, private val callback: OnItemClick) :
     FirestoreRecyclerAdapter<Department, NoteHolder>(options) {
     override fun onBindViewHolder(holder: NoteHolder, position: Int, model: Department) {
+        holder.binding.tvCompany.text = model.companyId
         holder.binding.tvDepartment.text = model.name
         holder.binding.tvWaiting.text = model.prefix.toString()
         holder.binding.root.setOnClickListener {

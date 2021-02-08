@@ -1,6 +1,7 @@
 package com.citraweb.qms.ui.dashboard.ui.departments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.databinding.FragmentDeparmentsBinding
 import com.citraweb.qms.ui.MyViewModelFactory
+import timber.log.Timber
 
 class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
 
@@ -48,12 +50,10 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
     }
 
     override fun click(S: Department, id: String) {
-        when(val join = departmentsViewModel.join(S, id)){
-
-        }
+         departmentsViewModel.join(S.amount, id)
     }
 
     override fun size(itemCount: Int) {
-
+        Log.d("itemCount", itemCount.toString())
     }
 }

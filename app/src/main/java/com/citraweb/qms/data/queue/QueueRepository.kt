@@ -5,9 +5,6 @@ import com.citraweb.qms.utils.Result
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
 interface QueueRepository {
-    suspend fun getQueues() : Result<List<Queue>?>
-    suspend fun addQueue(queue: Queue) : Result<Void?>
-    suspend fun joinQueue(idQueue : String) : Result<Void?>
+    suspend fun joinQueue(idQueue : String, lastNumber : Int) : Result<Void?>
     fun getQueryDepartment(): FirestoreRecyclerOptions<Department?>
-
 }
