@@ -1,6 +1,7 @@
 package com.citraweb.qms.ui.dashboard.ui.departments
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.citraweb.qms.data.department.Department
@@ -14,7 +15,10 @@ import timber.log.Timber
 
 class FireDepartmentAdapter(options: FirestoreRecyclerOptions<Department?>, private val callback: OnItemClick) :
     FirestoreRecyclerAdapter<Department, NoteHolder>(options) {
+    var ticketParent : String? = null
     override fun onBindViewHolder(holder: NoteHolder, position: Int, model: Department) {
+        val idDocument = snapshots.getSnapshot(position).id
+        ticketParent?.let { if (idDocument == ticketParent) holder.itemView.visibility = View.GONE }
         holder.binding.tvCompany.text = model.companyId
         holder.binding.tvDepartment.text = model.name
         holder.binding.tvWaiting.text = model.prefix.toString()

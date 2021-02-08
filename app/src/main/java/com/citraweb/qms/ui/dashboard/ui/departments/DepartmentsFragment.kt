@@ -11,17 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.databinding.FragmentDeparmentsBinding
 import com.citraweb.qms.ui.MyViewModelFactory
-import timber.log.Timber
+import com.citraweb.qms.utils.Result
 
 class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
 
     private var binding: FragmentDeparmentsBinding? = null
     private lateinit var departmentsViewModel: DepartmentsViewModel
-    private lateinit var adapter : FireDepartmentAdapter
+    private lateinit var adapter: FireDepartmentAdapter
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val fragmentBinding = FragmentDeparmentsBinding.inflate(inflater, container, false)
         binding = fragmentBinding
@@ -33,15 +33,28 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         adapter = FireDepartmentAdapter(departmentsViewModel.query, this)
-
         binding?.rvQueues?.apply {
             layoutManager = LinearLayoutManager(view.context)
             adapter = this@DepartmentsFragment.adapter
         }
-
         adapter.notifyDataSetChanged()
+
+        departmentsViewModel.user.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Result.Success -> {
+                    val user = result.data
+                    user?.let {
+                        adapter.ticketParent = it.ticketParent
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+                is Result.Error -> {
+                }
+                is Result.Canceled -> {
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -50,10 +63,21 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
     }
 
     override fun click(S: Department, id: String) {
-         departmentsViewModel.join(S.amount, id)
+        departmentsViewModel.join(S.amount, id)
     }
 
     override fun size(itemCount: Int) {
         Log.d("itemCount", itemCount.toString())
     }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.stopListening()
+    }
+
 }

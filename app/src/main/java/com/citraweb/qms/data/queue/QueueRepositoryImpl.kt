@@ -2,12 +2,16 @@ package com.citraweb.qms.data.queue
 
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.department.Department
+import com.citraweb.qms.data.user.User
 import com.citraweb.qms.utils.*
 import com.citraweb.qms.utils.SharePrefManager.Companion.ID_USER
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 
 class QueueRepositoryImpl : QueueRepository {
@@ -19,8 +23,22 @@ class QueueRepositoryImpl : QueueRepository {
     override fun getQueryDepartment(): FirestoreRecyclerOptions<Department?> {
         return FirestoreRecyclerOptions
                 .Builder<Department>()
-                .setQuery(departments, Department::class.java)
-                .build()
+                .setQuery(departments.whereEqualTo(
+                        DEPARTMENT_STATUS,
+                        StateDepartment.OPEN.name),
+                        Department::class.java).build()
+    }
+
+    override suspend fun detailUser(): Flow<Result<User?>> = callbackFlow {
+        val subscription = users.document(prefManager.getFromPreference(ID_USER)).addSnapshotListener { value, error ->
+            if (value!!.exists()) {
+                val detailDepartment = value.toObject(User::class.java)
+                offer(Result.Success(detailDepartment))
+            } else {
+                offer(Result.Error(error!!))
+            }
+        }
+        awaitClose { subscription.remove() }
     }
 
     override suspend fun joinQueue(idQueue: String, lastNumber: Int): Result<Void?> {
