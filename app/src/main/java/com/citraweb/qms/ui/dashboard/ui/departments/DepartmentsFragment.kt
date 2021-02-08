@@ -67,7 +67,6 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
     }
 
     override fun size(itemCount: Int) {
-        Log.d("itemCount", itemCount.toString())
     }
 
     override fun onStart() {

@@ -25,7 +25,11 @@ class QueueRepositoryImpl : QueueRepository {
                 .Builder<Department>()
                 .setQuery(departments.whereEqualTo(
                         DEPARTMENT_STATUS,
-                        StateDepartment.OPEN.name),
+                        StateDepartment.OPEN.name)
+                        .whereNotEqualTo(
+                                DEPARTMENT_STAFFID,
+                                prefManager.getFromPreference(ID_USER)
+                        ),
                         Department::class.java).build()
     }
 
