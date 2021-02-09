@@ -20,4 +20,5 @@ interface UserRepository
     fun logoutUserInFirestore()
     suspend fun getUserInFirestore(): Result<User?>
     fun setDepartmentId(it: String)
+    suspend fun updateFcmToken(newToken: String): Result<Void?>
 }

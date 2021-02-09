@@ -9,12 +9,10 @@ import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
-import com.citraweb.qms.data.user.UserRepositoryImpl.Companion.updateFcmToken
 import com.citraweb.qms.utils.MyBaseViewModel
 import com.citraweb.qms.utils.Result
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -59,8 +57,10 @@ class DashboardViewModel(private val repository: UserRepository) : MyBaseViewMod
                                 // Get new FCM registration token
                                 val token = task.result
                                 Timber.d(token)
-                                GlobalScope.launch {
-                                    token?.let { updateFcmToken(it) }
+                                token?.let {
+                                    launchDataLoad {
+                                        repository.updateFcmToken(it)
+                                    }
                                 }
                             })
                     }

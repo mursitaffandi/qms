@@ -12,10 +12,12 @@ import com.citraweb.qms.ui.dashboard.ui.staff.StaffViewModel
 import com.citraweb.qms.ui.forgetpassword.ForgetPasswordViewModel
 import com.citraweb.qms.ui.login.LoginViewModel
 import com.citraweb.qms.ui.register.RegisterViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Suppress("UNCHECKED_CAST")
 class MyViewModelFactory : ViewModelProvider.Factory {
 
+    @ExperimentalCoroutinesApi
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) return LoginViewModel(
             UserRepositoryImpl()
@@ -36,7 +38,7 @@ class MyViewModelFactory : ViewModelProvider.Factory {
             QueueRepositoryImpl()
         ) as T
 
-        if (modelClass.isAssignableFrom(StaffViewModel::class.java)) return StaffViewModel(MyApp.instance,
+        if (modelClass.isAssignableFrom(StaffViewModel::class.java)) return StaffViewModel(
             StaffRepositoryImpl()
 //        TODO : change to variable
         ) as T

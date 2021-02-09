@@ -9,6 +9,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -33,6 +34,7 @@ class QueueRepositoryImpl : QueueRepository {
                         Department::class.java).build()
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun detailUser(): Flow<Result<User?>> = callbackFlow {
         val subscription = users.document(prefManager.getFromPreference(ID_USER)).addSnapshotListener { value, error ->
             if (value!!.exists()) {
@@ -63,7 +65,6 @@ class QueueRepositoryImpl : QueueRepository {
                         USER_TICKET to lastNumber + 1
                 )
         )
-
 
         return batch.commit().await()
     }

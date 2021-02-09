@@ -13,20 +13,19 @@ import com.citraweb.qms.data.Data
 import com.citraweb.qms.data.FCMPayload
 import com.citraweb.qms.data.department.StaffRepositoryImpl
 import com.citraweb.qms.data.user.User
-import com.citraweb.qms.utils.MyBaseViewModel
-import com.citraweb.qms.utils.Result
-import com.citraweb.qms.utils.StateDepartment
+import com.citraweb.qms.utils.*
 import com.google.firebase.Timestamp
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.util.*
 
-
-class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: StaffRepositoryImpl) : MyBaseViewModel() {
+@ExperimentalCoroutinesApi
+class StaffViewModel constructor(private val staffRepositoryImpl: StaffRepositoryImpl) : MyBaseViewModel() {
 
     val query = staffRepositoryImpl.getQueryQueue()
 
@@ -44,7 +43,7 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
 
 
     fun powerClick(powerStatus: StateDepartment) {
-        _echo.value = ctx.getString(
+        _echo.value = MyApp.instance.getString(
                 if (powerStatus == StateDepartment.OPEN)
                     R.string.click_staff_power_off
                 else
@@ -81,12 +80,9 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
     }
     // Instantiate the RequestQueue.
     val queue: RequestQueue = Volley.newRequestQueue(MyApp.instance)
-    val url = "https://fcm.googleapis.com/fcm/send"
 
-    fun call(S: User, deparmentName: String, companyName: String) {
-
-
-        val payload = FCMPayload(S.fcm?: "", Data(
+    fun call(user: User, deparmentName: String, companyName: String) {
+        val payload = FCMPayload(user.fcm?: "", Data(
             departmentName = deparmentName,
             companyName = companyName,
             priority = "high"
@@ -95,15 +91,16 @@ class StaffViewModel(private val ctx: Context, private val staffRepositoryImpl: 
         val mRequestBody = Gson().toJson(payload).toString()
 
 // Request a string response from the provided URL.
-        val stringRequest = object : StringRequest(Method.POST, url, { response ->
+        val stringRequest = object : StringRequest(Method.POST, URL_FCM, { response ->
             Timber.d(response.toString())
+            _echo.value = "success called ${user.name}"
         }, {
             Timber.e(it)
         }){
             override fun getHeaders(): MutableMap<String, String> {
                 return mutableMapOf(
                         "Content-Type" to "application/json",
-                        "Authorization" to "key=AAAAtjc8cKg:APA91bH_YxLrXo7v1D39ecb4fngJx8ZGxOlovsNyf0BjhoWJ9huUPVVf0s0p1KOVpvWn-n9mCm2eJzxA_NELF2hjoLExUFiLR4wrsgEskVDy-iQa8fJADwXMZ8OoBAf98SbqnZjew6Ri"
+                        "Authorization" to "key=$KEY_SERVER_FCM"
                 )
             }
 
