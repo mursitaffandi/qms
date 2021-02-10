@@ -28,5 +28,6 @@ const val USER_TICKET = "ticket"
 const val USER_TICKETPARENT = "ticketParent"
 
 const val URL_FCM = "https://fcm.googleapis.com/fcm/send"
-const val BROADCAST_CALLED_QUEUE = "ping"
+const val ACTION_BROADCAST_CALLED_QUEUE = "ping"
+const val KEY_EXTRA_BROADCAST = "broadcast"
 const val KEY_SERVER_FCM = "AAAAtjc8cKg:APA91bH_YxLrXo7v1D39ecb4fngJx8ZGxOlovsNyf0BjhoWJ9huUPVVf0s0p1KOVpvWn-n9mCm2eJzxA_NELF2hjoLExUFiLR4wrsgEskVDy-iQa8fJADwXMZ8OoBAf98SbqnZjew6Ri"

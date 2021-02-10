@@ -13,12 +13,27 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import timber.log.Timber
 
 
-class FireDepartmentAdapter(options: FirestoreRecyclerOptions<Department?>, private val callback: OnItemClick) :
+class FireDepartmentAdapter(
+    options: FirestoreRecyclerOptions<Department?>,
+    private val callback: OnItemClick
+) :
     FirestoreRecyclerAdapter<Department, NoteHolder>(options) {
     var ticketParent : String? = null
     override fun onBindViewHolder(holder: NoteHolder, position: Int, model: Department) {
         val idDocument = snapshots.getSnapshot(position).id
-        ticketParent?.let { if (idDocument == ticketParent) holder.itemView.visibility = View.GONE }
+        holder.itemView.visibility = View.VISIBLE
+        holder.itemView.layoutParams =
+            RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+        ticketParent?.let {
+            if (idDocument == ticketParent) {
+                holder.itemView.visibility = View.GONE
+                holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
+            }
+        }
         holder.binding.tvCompany.text = model.companyId
         holder.binding.tvDepartment.text = model.name
         holder.binding.tvWaiting.text = model.prefix.toString()

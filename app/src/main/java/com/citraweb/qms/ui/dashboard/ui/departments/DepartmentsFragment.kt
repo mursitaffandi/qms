@@ -19,14 +19,14 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
     private lateinit var departmentsViewModel: DepartmentsViewModel
     private lateinit var adapter: FireDepartmentAdapter
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val fragmentBinding = FragmentDeparmentsBinding.inflate(inflater, container, false)
         binding = fragmentBinding
         departmentsViewModel = ViewModelProvider(this, MyViewModelFactory())
-                .get(DepartmentsViewModel::class.java)
+            .get(DepartmentsViewModel::class.java)
 
         return fragmentBinding.root
     }
@@ -44,8 +44,8 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
             when (result) {
                 is Result.Success -> {
                     val user = result.data
-                    user?.let {
-                        adapter.ticketParent = it.ticketParent
+                    user?.ticketParent?.let { it1 ->
+                        adapter.ticketParent = it1
                         adapter.notifyDataSetChanged()
                     }
                 }

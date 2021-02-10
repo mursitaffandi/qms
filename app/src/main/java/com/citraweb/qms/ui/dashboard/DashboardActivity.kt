@@ -12,31 +12,44 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.citraweb.qms.R
+import com.citraweb.qms.data.Data
 import com.citraweb.qms.service.MyMessagingService.Companion.isDashboardForeGround
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.ui.login.LoginActivity
-import com.citraweb.qms.utils.BROADCAST_CALLED_QUEUE
+import com.citraweb.qms.utils.ACTION_BROADCAST_CALLED_QUEUE
+import com.citraweb.qms.utils.KEY_EXTRA_BROADCAST
 import com.citraweb.qms.utils.startActivity
 import com.google.android.material.navigation.NavigationView
+import timber.log.Timber
 
 
 class DashboardActivity : AppCompatActivity() {
+    private lateinit var navController: NavController
     private lateinit var viewModel: DashboardViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var drawerLayout: DrawerLayout
     private val mReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            appBarConfiguration.topLevelDestinations
+            intent?.let {
+                val data = it.getParcelableExtra<Data>(KEY_EXTRA_BROADCAST)
+                Timber.tag("terima").d(data.departmentName)
+                navController.navigate(R.id.nav_gallery)
+
+            }
         }
     }
 
-    private val filter = IntentFilter()
+    private lateinit var localBroadcastManager: LocalBroadcastManager
+
+    private lateinit var filter: IntentFilter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +59,10 @@ class DashboardActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, MyViewModelFactory())
             .get(DashboardViewModel::class.java)
 
-        filter.addAction(BROADCAST_CALLED_QUEUE)
-        registerReceiver(mReceiver, filter)
+        localBroadcastManager = LocalBroadcastManager.getInstance(this)
+        filter = IntentFilter()
+        filter.addAction(ACTION_BROADCAST_CALLED_QUEUE)
+        localBroadcastManager.registerReceiver(mReceiver, filter)
         viewModel.start()
 
         viewModel.currentUserLD.observe(this@DashboardActivity, Observer { resultData ->
@@ -59,29 +74,26 @@ class DashboardActivity : AppCompatActivity() {
                 }
                 finish()
                 return@Observer
-            } else
-            {
+            } else {
                 drawerLayout = findViewById(R.id.drawer_layout)
                 val navView: NavigationView = findViewById(R.id.nav_view)
-                val navController = findNavController(R.id.nav_host_fragment)
+                navController = findNavController(R.id.nav_host_fragment)
                 // Passing each menu ID as a set of Ids because each
                 // menu should be considered as top level destinations.
                 appBarConfiguration = AppBarConfiguration(
                     setOf(
-                        R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                        R.id.nav_gallery, R.id.nav_home, R.id.nav_slideshow
                     ), drawerLayout
                 )
+
                 setupActionBarWithNavController(navController, appBarConfiguration)
                 navView.setupWithNavController(navController)
+
+                intent?.getParcelableExtra<Data>("")?.let {
+                    navController.navigate(R.id.nav_gallery)
+                }
             }
         })
-
-        /* val fab: FloatingActionButton = findViewById(R.id.fab)
-         fab.setOnClickListener { view ->
-             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                     .setAction("Action", null).show()
-         }*/
-
     }
 
     override fun onResume() {
@@ -100,7 +112,7 @@ class DashboardActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    fun logout(v: MenuItem) : Boolean {
+    fun logout(v: MenuItem): Boolean {
         viewModel.revoke()
         drawerLayout.closeDrawers()
         return true
@@ -111,13 +123,8 @@ class DashboardActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    override fun onStop() {
-        isDashboardForeGround = false
-        super.onStop()
-    }
-
     override fun onDestroy() {
-        unregisterReceiver(mReceiver)
+        localBroadcastManager.unregisterReceiver(mReceiver)
         super.onDestroy()
     }
 }
