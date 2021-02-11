@@ -1,14 +1,17 @@
 package com.citraweb.qms.service
 
+import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
-import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.citraweb.qms.R
 import com.citraweb.qms.data.Data
@@ -32,6 +35,12 @@ class MyMessagingViewModel(private val ctx: Context, private val repository: Use
     private val gson = Gson()
     var localBroadcastManager = LocalBroadcastManager.getInstance(ctx)
 
+    // declaring variables
+    var notificationManager = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    lateinit var notificationChannel: NotificationChannel
+    lateinit var builder: Notification.Builder
+    private val channelId = "com.citraweb.qms.service"
+    private val description = "queue notification"
 
     fun sendNewToken(newToken: String) {
         GlobalScope.launch {
@@ -56,23 +65,20 @@ class MyMessagingViewModel(private val ctx: Context, private val repository: Use
             data.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
             if (message.data.isNotEmpty()) {
-
-                data.putExtra(
-                    KEY_EXTRA_BROADCAST, gson.fromJson(
+                val fcmData = gson.fromJson(
                         gson.toJson(message.data),
-                        Data::class.java
-                    )
-                )
+                        Data::class.java)
+
+                data.putExtra(KEY_EXTRA_BROADCAST, fcmData)
                 if (isDashboardForeGround)
                     localBroadcastManager.sendBroadcast(data)
                 else {
                     data.component = ComponentName(ctx, DashboardActivity::class.java)
-
                     ctx.startActivity(data)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         // only for gingerbread and newer versions
 //                        TODO : Display notif and sound
-                        displayNotification(data, ctx)
+                        displayNotification(data, ctx, fcmData.companyName, fcmData.departmentName)
                     }
 
                 }
@@ -84,28 +90,46 @@ class MyMessagingViewModel(private val ctx: Context, private val repository: Use
         }
     }
 
-    private fun displayNotification(intent: Intent, _ctx: Context) {
-//        TODO : create notif widget
-        val builder = NotificationCompat.Builder(_ctx, "")
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Notifications Example")
-            .setContentText("This is a test notification")
+    private fun displayNotification(intent: Intent, _ctx: Context, notif_title: String, notif_content: String) {
+        val pendingIntent = PendingIntent.getActivity(_ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationChannel = NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.GREEN
+            notificationChannel.enableVibration(true)
+            notificationChannel.setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                            .build()
+            )
 
-        val contentIntent = PendingIntent.getActivity(
-            _ctx, 0, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        builder.setSound(alarmSound)
-        builder.setContentIntent(contentIntent)
-        builder.setAutoCancel(true)
-        builder.setLights(Color.BLUE, 500, 500)
-        val pattern = longArrayOf(500, 500, 500, 500, 500, 500, 500, 500, 500)
-        builder.setVibrate(pattern)
-        builder.setStyle(NotificationCompat.InboxStyle())
-        // Add as notification
-        val manager = _ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        manager!!.notify(1, builder.build())
+            notificationManager.createNotificationChannel(notificationChannel)
+
+            builder = Notification.Builder(_ctx, channelId)
+                    .setContentTitle(notif_title)
+                    .setContentText(notif_content)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(_ctx.resources, R.drawable.ic_launcher_background))
+                    .setContentIntent(pendingIntent)
+        } else {
+            builder = Notification.Builder(_ctx)
+                    .setVibrate(longArrayOf(0, 500, 1000))
+                    .setSound(
+                            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                            AudioAttributes.Builder()
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                                    .build()
+                    )
+                    .setContentTitle(notif_title)
+                    .setContentText(notif_content)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(_ctx.resources, R.drawable.ic_launcher_background))
+                    .setContentIntent(pendingIntent)
+        }
+        notificationManager.notify(1234, builder.build())
     }
 }

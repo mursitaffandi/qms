@@ -1,5 +1,7 @@
 package com.citraweb.qms.service
 
+import android.app.NotificationManager
+import android.content.Context
 import android.util.Log
 import com.citraweb.qms.data.Data
 import com.citraweb.qms.data.user.UserRepositoryImpl
@@ -18,6 +20,7 @@ class MyMessagingService : FirebaseMessagingService() {
     override fun onCreate() {
         super.onCreate()
         viewmodel = MyMessagingViewModel(this, UserRepositoryImpl())
+
     }
 
     override fun onNewToken(p0: String) {
