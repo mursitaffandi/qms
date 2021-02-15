@@ -2,7 +2,6 @@ package com.citraweb.qms.ui.register
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
@@ -24,25 +23,25 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
     //Email
     fun registerUserFromAuthWithEmailAndPassword(name: String, email: String, password: String) {
         launchDataLoad {
-            when (val result =
-                    userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
-                is Result.Success -> {
-                    result.data?.let { firebaseUser ->
-                        createDepartmnetInFirestore(firebaseUser.uid,
-                                User(
-                                        firebaseUser.email,
-                                        firebaseUser.displayName,
-                                        1,
-                                        ""
-                                ))
+                when (val result =
+                        userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
+                    is Result.Success -> {
+                        result.data?.let { firebaseUser ->
+                            createDepartmnetInFirestore(firebaseUser.uid, User(
+                                    firebaseUser.email,
+                                    name,
+                            "",
+                                    2,
+                                    ""
+                                    ))
+                        }
                     }
-                }
-                is Result.Error -> {
-                    _echo.value = result.exception.message
-                }
-                is Result.Canceled -> {
-                    _echo.value = MyApp.instance.getString(R.string.request_canceled)
-                }
+                    is Result.Error -> {
+                        _echo.value = result.exception.message
+                    }
+                    is Result.Canceled -> {
+                        _echo.value = MyApp.instance.getString(R.string.request_canceled)
+                    }
             }
         }
     }
@@ -50,6 +49,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
     private suspend fun createDepartmnetInFirestore(staffId: String, user: User) {
         when (val result = userRepository.createDepartmnetInFirestore(staffId)) {
             is Result.Success -> {
+                user.departmentId = result.data?.id
                 createUserInFirestore(staffId, user)
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
             }

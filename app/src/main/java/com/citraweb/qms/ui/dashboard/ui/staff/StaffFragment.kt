@@ -13,22 +13,21 @@ import com.citraweb.qms.R
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.databinding.DialogInfoDepartmentBinding
 import com.citraweb.qms.databinding.FragmentStaffBinding
-import com.citraweb.qms.databinding.ItemDepartmentBinding
 import com.citraweb.qms.ui.MyViewModelFactory
+import com.citraweb.qms.ui.dashboard.ui.queue.FireQueueAdapter
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.StateDepartment
 import com.citraweb.qms.utils.toas
 import com.ncorti.slidetoact.SlideToActView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
-class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
+class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
 
     private lateinit var departmentName: String
     private lateinit var company: String
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
-    private lateinit var memberAdapter: FireMemberAdapter
+    private lateinit var adapter: FireQueueAdapter
     private val iconPower = listOf(
             R.drawable.ic_baseline_stop_24,
             R.drawable.ic_baseline_play_arrow_24
@@ -45,9 +44,7 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
     ): View? {
         val fragmentBinding = FragmentStaffBinding.inflate(inflater, container, false)
         binding = fragmentBinding
-        viewModel = ViewModelProvider(this, MyViewModelFactory())
-                .get(StaffViewModel::class.java)
-
+        viewModel = ViewModelProvider(this, MyViewModelFactory()).get(StaffViewModel::class.java)
         return fragmentBinding.root
     }
 
@@ -95,23 +92,21 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
             view.context.toas(message).show()
         })
 
-        memberAdapter = FireMemberAdapter(viewModel.query, this)
+        adapter = FireQueueAdapter(viewModel.query, this)
 
         binding?.rvStaff?.apply {
             layoutManager = LinearLayoutManager(view.context)
-            adapter = this@StaffFragment.memberAdapter
+            adapter = this@StaffFragment.adapter
         }
 
-        memberAdapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
 
         binding?.ivPower?.setOnLongClickListener {
-            if (departmentName.isEmpty() || company.isEmpty()) {
+            if (departmentName.isEmpty() || company.isEmpty())
                 dialogInfoDepartment()
-                true
-            } else {
+             else
                 viewModel.powerLongClick(powerStatus, departmentName, company)
-                true
-            }
+            true
         }
 
         binding?.ivPower?.setOnClickListener {
@@ -132,9 +127,8 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
     private fun dialogInfoDepartment() {
         val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle("With EditText")
-        val dialogLayout = DialogInfoDepartmentBinding
-                .inflate(LayoutInflater.from(requireActivity()), null, false)
+        builder.setTitle(context?.getString(R.string.title_dialog_department))
+        val dialogLayout = DialogInfoDepartmentBinding.inflate(LayoutInflater.from(context), null, false)
         val edtCompany = dialogLayout.tietDepartmentCompany
         val edtName = dialogLayout.tietDepartmentName
         builder.setView(dialogLayout.root)
@@ -154,16 +148,16 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
     override fun onStart() {
         super.onStart()
-        memberAdapter.startListening()
+        adapter.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        memberAdapter.stopListening()
+        adapter.stopListening()
     }
 
-    override fun click(S: User, idSnapshot: String) {
-        viewModel.call(S, departmentName, company)
+    override fun click(idUser: String?, department: String?) {
+        idUser?.let { viewModel.call(it, departmentName, company) }
     }
 
     override fun size(itemCount: Int) {

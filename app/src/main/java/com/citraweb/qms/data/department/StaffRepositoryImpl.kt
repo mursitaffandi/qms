@@ -2,7 +2,6 @@ package com.citraweb.qms.data.department
 
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.queue.Queue
-import com.citraweb.qms.data.user.User
 import com.citraweb.qms.utils.*
 import com.citraweb.qms.utils.SharePrefManager.Companion.ID_DEPARTMENT
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -20,6 +19,7 @@ class StaffRepositoryImpl : StaffAction {
     private val db = Firebase.firestore
     private val departmentStore = db.collection(DEPARTMENT_COLLECTION_NAME)
     private val queueStore = db.collection(QUEUE_COLLECTION_NAME)
+    private val userStore = db.collection(USER_COLLECTION_NAME)
 
     override fun getQueryQueue(): FirestoreRecyclerOptions<Queue?> {
         return FirestoreRecyclerOptions.Builder<Queue>()
@@ -106,6 +106,24 @@ class StaffRepositoryImpl : StaffAction {
                 }
                 is Result.Canceled -> {
                     Result.Canceled(members.exception)
+                }
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun getFcm(idUser: String): Result<String?> {
+        return try {
+            when (val fcm = userStore.document(idUser).get().await()) {
+                is Result.Error -> {
+                    Result.Error(fcm.exception)
+                }
+                is Result.Canceled -> {
+                    Result.Canceled(fcm.exception)
+                }
+                is Result.Success -> {
+                    Result.Success(fcm.data.get(USER_FCM).toString())
                 }
             }
         } catch (e: Exception) {

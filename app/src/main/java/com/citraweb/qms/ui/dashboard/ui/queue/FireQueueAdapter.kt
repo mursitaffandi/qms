@@ -16,10 +16,11 @@ class FireQueueAdapter(
         private val callback: OnItemClick
 ) :
     FirestoreRecyclerAdapter<Queue, FireQueueAdapter.QueueHolder>(options) {
-    var ticketParent : String? = null
     override fun onBindViewHolder(holder: QueueHolder, position: Int, model: Queue) {
         val idDocument = snapshots.getSnapshot(position).id
-
+        holder.itemView.setOnClickListener {
+            callback.click(model.user, model.department)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QueueHolder {
@@ -43,6 +44,7 @@ class FireQueueAdapter(
 
     interface OnItemClick{
         fun size(itemCount: Int)
+        fun click(idUser : String?, departmentId : String?){}
     }
 }
 
