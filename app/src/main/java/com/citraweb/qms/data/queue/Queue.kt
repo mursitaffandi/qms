@@ -19,10 +19,6 @@ class Queue(
         @set:PropertyName("department")
         var department: String? = null,
 
-        @get:PropertyName("company")
-        @set:PropertyName("company")
-        var company: String? = null,
-
 
         @get:PropertyName("status")
         @set:PropertyName("status")

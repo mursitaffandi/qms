@@ -14,12 +14,11 @@ import timber.log.Timber
 
 
 class FireDepartmentAdapter(
-    options: FirestoreRecyclerOptions<Department?>,
-    private val callback: OnItemClick, private val idUser : String
-) :
-    FirestoreRecyclerAdapter<Department, NoteHolder>(options) {
+        options: FirestoreRecyclerOptions<Department?>,
+        private val callback: OnItemClick,
+        private val idUser : String
+) : FirestoreRecyclerAdapter<Department, NoteHolder>(options) {
     override fun onBindViewHolder(holder: NoteHolder, position: Int, model: Department) {
-        val idDocument = snapshots.getSnapshot(position).id
         holder.itemView.visibility = View.VISIBLE
         holder.itemView.layoutParams =
             RecyclerView.LayoutParams(
@@ -34,13 +33,9 @@ class FireDepartmentAdapter(
             }
         }
 
-        model.currentQueue?.let {
-            model.waitings?.get(it)
-        }
-
         holder.binding.tvCompany.text = model.companyId
         holder.binding.tvDepartment.text = model.name
-        holder.binding.tvWaiting.text = model.prefix.toString()
+        holder.binding.tvWaiting.text = "Jumlah Antrian :${model.waitings?.size.toString()}"
         holder.binding.root.setOnClickListener {
             model.waitings?.let {
                 if (!it.contains(idUser)){
@@ -51,8 +46,7 @@ class FireDepartmentAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
-        val binding = ItemDepartmentBinding
-            .inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemDepartmentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NoteHolder(binding)
     }
 
@@ -62,15 +56,14 @@ class FireDepartmentAdapter(
     }
 
     override fun onError(e: FirebaseFirestoreException) {
-        Timber.tag("FirestoreException").e(e);
+        Timber.tag("FireDepartmentAdapter").e(e);
         super.onError(e)
     }
 
-    inner class NoteHolder(val binding: ItemDepartmentBinding)
-        :RecyclerView.ViewHolder(binding.root)
+    inner class NoteHolder(val binding: ItemDepartmentBinding) :RecyclerView.ViewHolder(binding.root)
 
     interface OnItemClick{
-        fun click(S: Department, id: String)
+        fun click(departement: Department, id: String)
         fun size(itemCount: Int)
     }
 }

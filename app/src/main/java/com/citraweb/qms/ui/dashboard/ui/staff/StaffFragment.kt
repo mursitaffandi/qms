@@ -132,10 +132,15 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
         val edtCompany = dialogLayout.tietDepartmentCompany
         val edtName = dialogLayout.tietDepartmentName
         builder.setView(dialogLayout.root)
+        
         builder.setPositiveButton("OK") { dialogInterface, i ->
             company = edtCompany.text.toString()
             departmentName = edtName.text.toString()
-            viewModel.powerLongClick(powerStatus, departmentName, company)
+            if (departmentName.isEmpty() || company.isEmpty()){
+                return@setPositiveButton
+            } else {
+                viewModel.powerLongClick(powerStatus, departmentName, company)
+            }
         }
         builder.show()
     }

@@ -4,17 +4,13 @@ import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.utils.*
 import com.citraweb.qms.utils.SharePrefManager.Companion.ID_USER
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
-import java.time.LocalDateTime.now
 
 class UserRepositoryImpl : UserRepository {
     private val departmentCollection = Firebase.firestore.collection(DEPARTMENT_COLLECTION_NAME)
@@ -23,7 +19,7 @@ class UserRepositoryImpl : UserRepository {
     private val userCollection = Firebase.firestore.collection(USER_COLLECTION_NAME)
     private val prefManager = SharePrefManager(MyApp.instance)
 
-    override suspend fun updateFcmToken(newToken: String): Result<Void?> {
+    override suspend fun updateFcmToken(newToken: kotlin.String): Result<Void?> {
         return try {
             when (val update =
                 userCollection.document(prefManager.getFromPreference(ID_USER)).update(
@@ -46,9 +42,9 @@ class UserRepositoryImpl : UserRepository {
 
 
     override suspend fun registerUserFromAuthWithEmailAndPassword(
-        name: String,
-        email: String,
-        password: String
+            name: kotlin.String,
+            email: kotlin.String,
+            password: kotlin.String
     ): Result<FirebaseUser?> {
         try {
             return when (val resultDocumentSnapshot =
@@ -84,7 +80,7 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun createUserInFirestore(id: String, user: User): Result<Void?> {
+    override suspend fun createUserInFirestore(id: kotlin.String, user: User): Result<Void?> {
         return try {
             userCollection.document(id).set(user).await()
         } catch (exception: Exception) {
@@ -92,16 +88,16 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun createDepartmnetInFirestore(staffId: String): Result<DocumentReference?> {
+    override suspend fun createDepartmnetInFirestore(staffId: kotlin.String): Result<DocumentReference?> {
         return try {
             departmentCollection.add(
-                Department(
-                    companyId = "",
-                    name = "",
-                    prefix = "",
-                    staffId = staffId,
-                    status = StateDepartment.CLOSE.name,
-                )
+                    Department(
+                            companyId = "",
+                            name = "",
+                            prefix = "",
+                            staffId = staffId,
+                            status = StateDepartment.CLOSE.name,
+                    )
             ).await()
         } catch (exception: Exception) {
             Result.Error(exception)
@@ -110,8 +106,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override suspend fun loginUserInFirestore(
-        email: String,
-        password: String
+            email: kotlin.String,
+            password: kotlin.String
     ): Result<FirebaseUser?> {
         try {
             return when (val resultDocumentSnapshot =
@@ -162,7 +158,7 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override fun setDepartmentId(it: String) {
+    override fun setDepartmentId(it: kotlin.String) {
         prefManager.setDepartmentId(it)
     }
 

@@ -46,11 +46,4 @@
             android:textSize="@dimen/textsize_large" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_dialog_departmetn_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ok"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_department_company" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,7 +43,7 @@ class StaffRepositoryImpl : StaffAction {
         awaitClose { subscription.remove() }
     }
 
-    override suspend fun updateDepartement(action: StateDepartment, name: String, company: String): Result<Void?> {
+    override suspend fun updateDepartement(action: StateDepartment, name: kotlin.String, company: kotlin.String): Result<Void?> {
         return try {
             if (action == StateDepartment.CLOSE) {
                 when(val u = removeMember()){
@@ -113,7 +113,7 @@ class StaffRepositoryImpl : StaffAction {
         }
     }
 
-    override suspend fun getFcm(idUser: String): Result<String?> {
+    override suspend fun getFcm(idUser: kotlin.String): Result<kotlin.String?> {
         return try {
             when (val fcm = userStore.document(idUser).get().await()) {
                 is Result.Error -> {
