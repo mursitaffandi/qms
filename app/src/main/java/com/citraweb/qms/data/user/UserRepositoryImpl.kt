@@ -96,9 +96,9 @@ class UserRepositoryImpl : UserRepository {
         return try {
             departmentCollection.add(
                 Department(
-                    companyId = "companyMboh",
-                    name = "Police Department",
-                    prefix = "P",
+                    companyId = "",
+                    name = "",
+                    prefix = "",
                     staffId = staffId,
                     status = StateDepartment.CLOSE.name,
                 )

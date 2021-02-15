@@ -15,10 +15,9 @@ import timber.log.Timber
 
 class FireDepartmentAdapter(
     options: FirestoreRecyclerOptions<Department?>,
-    private val callback: OnItemClick
+    private val callback: OnItemClick, private val idUser : String
 ) :
     FirestoreRecyclerAdapter<Department, NoteHolder>(options) {
-    var ticketParent : String? = null
     override fun onBindViewHolder(holder: NoteHolder, position: Int, model: Department) {
         val idDocument = snapshots.getSnapshot(position).id
         holder.itemView.visibility = View.VISIBLE
@@ -28,17 +27,26 @@ class FireDepartmentAdapter(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
 
-        ticketParent?.let {
-            if (idDocument == ticketParent) {
+        model.waitings?.let {
+            if (it.contains(idUser)) {
                 holder.itemView.visibility = View.GONE
                 holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
             }
         }
+
+        model.currentQueue?.let {
+            model.waitings?.get(it)
+        }
+
         holder.binding.tvCompany.text = model.companyId
         holder.binding.tvDepartment.text = model.name
         holder.binding.tvWaiting.text = model.prefix.toString()
         holder.binding.root.setOnClickListener {
-            callback.click(model, snapshots.getSnapshot(position).id)
+            model.waitings?.let {
+                if (!it.contains(idUser)){
+                    callback.click(model, snapshots.getSnapshot(position).id)
+                }
+            }
         }
     }
 

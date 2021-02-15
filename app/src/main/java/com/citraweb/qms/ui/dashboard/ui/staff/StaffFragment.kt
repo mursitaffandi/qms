@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.citraweb.qms.R
 import com.citraweb.qms.data.user.User
+import com.citraweb.qms.databinding.DialogInfoDepartmentBinding
 import com.citraweb.qms.databinding.FragmentStaffBinding
+import com.citraweb.qms.databinding.ItemDepartmentBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.StateDepartment
@@ -27,8 +30,8 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
     private lateinit var viewModel: StaffViewModel
     private lateinit var memberAdapter: FireMemberAdapter
     private val iconPower = listOf(
-        R.drawable.ic_baseline_stop_24,
-        R.drawable.ic_baseline_play_arrow_24
+            R.drawable.ic_baseline_stop_24,
+            R.drawable.ic_baseline_play_arrow_24
     )
     private lateinit var powerStatus: StateDepartment
     private var currentIndexWaiting = 0
@@ -36,14 +39,14 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val fragmentBinding = FragmentStaffBinding.inflate(inflater, container, false)
         binding = fragmentBinding
         viewModel = ViewModelProvider(this, MyViewModelFactory())
-            .get(StaffViewModel::class.java)
+                .get(StaffViewModel::class.java)
 
         return fragmentBinding.root
     }
@@ -80,8 +83,10 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
                         }
                     }
                 }
-                is Result.Error -> {}
-                is Result.Canceled -> {}
+                is Result.Error -> {
+                }
+                is Result.Canceled -> {
+                }
             }
         })
 
@@ -100,8 +105,13 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
         memberAdapter.notifyDataSetChanged()
 
         binding?.ivPower?.setOnLongClickListener {
-            viewModel.powerLongClick(powerStatus)
-            true
+            if (departmentName.isEmpty() || company.isEmpty()) {
+                dialogInfoDepartment()
+                true
+            } else {
+                viewModel.powerLongClick(powerStatus, departmentName, company)
+                true
+            }
         }
 
         binding?.ivPower?.setOnClickListener {
@@ -109,16 +119,33 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
         }
 
         binding?.staffSlider?.onSlideCompleteListener =
-            object : SlideToActView.OnSlideCompleteListener {
-                override fun onSlideComplete(view: SlideToActView) {
-                    if (currentIndexWaiting < amountQueue) {
-                        val nextIndex = currentIndexWaiting + 1
-                        viewModel.setQueue(nextIndex)
-                        binding?.staffSlider?.bumpVibration = 50
+                object : SlideToActView.OnSlideCompleteListener {
+                    override fun onSlideComplete(view: SlideToActView) {
+                        if (currentIndexWaiting < amountQueue) {
+                            val nextIndex = currentIndexWaiting + 1
+                            viewModel.setQueue(nextIndex)
+                            binding?.staffSlider?.bumpVibration = 50
+                        }
                     }
                 }
-            }
     }
+
+    private fun dialogInfoDepartment() {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("With EditText")
+        val dialogLayout = DialogInfoDepartmentBinding
+                .inflate(LayoutInflater.from(requireActivity()), null, false)
+        val edtCompany = dialogLayout.tietDepartmentCompany
+        val edtName = dialogLayout.tietDepartmentName
+        builder.setView(dialogLayout.root)
+        builder.setPositiveButton("OK") { dialogInterface, i ->
+            company = edtCompany.text.toString()
+            departmentName = edtName.text.toString()
+            viewModel.powerLongClick(powerStatus, departmentName, company)
+        }
+        builder.show()
+    }
+
 
     override fun onDestroyView() {
         binding = null

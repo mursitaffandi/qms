@@ -20,11 +20,23 @@ class QueueRepositoryImpl : QueueRepository {
     private val firestore = Firebase.firestore
     private val departments = firestore.collection(DEPARTMENT_COLLECTION_NAME)
     private val users = firestore.collection(USER_COLLECTION_NAME)
+    private val queues = firestore.collection(QUEUE_COLLECTION_NAME)
+
+    override fun getQueryQueue(): FirestoreRecyclerOptions<Queue?> {
+        return FirestoreRecyclerOptions.Builder<Queue>()
+                .setQuery(
+                        queues.whereEqualTo(
+                                QUEUE_USER,
+                                prefManager.getFromPreference(ID_USER)),
+                        Queue::class.java).build()
+    }
+
 
     override fun getQueryDepartment(): FirestoreRecyclerOptions<Department?> {
         return FirestoreRecyclerOptions
                 .Builder<Department>()
-                .setQuery(departments.whereEqualTo(
+                .setQuery(departments
+                        .whereEqualTo(
                         DEPARTMENT_STATUS,
                         StateDepartment.OPEN.name)
                         .whereNotEqualTo(

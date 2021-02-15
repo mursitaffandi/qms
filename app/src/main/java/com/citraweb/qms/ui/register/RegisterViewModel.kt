@@ -9,7 +9,6 @@ import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
 import com.citraweb.qms.utils.*
-import kotlinx.coroutines.launch
 
 
 class RegisterViewModel(private val userRepository: UserRepository) : MyBaseViewModel() {
@@ -25,27 +24,32 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
     //Email
     fun registerUserFromAuthWithEmailAndPassword(name: String, email: String, password: String) {
         launchDataLoad {
-                when (val result =
-                        userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
-                    is Result.Success -> {
-                        result.data?.let { firebaseUser ->
-                            createDepartmnetInFirestore(firebaseUser.uid, User(firebaseUser, name))
-                        }
+            when (val result =
+                    userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
+                is Result.Success -> {
+                    result.data?.let { firebaseUser ->
+                        createDepartmnetInFirestore(firebaseUser.uid,
+                                User(
+                                        firebaseUser.email,
+                                        firebaseUser.displayName,
+                                        1,
+                                        ""
+                                ))
                     }
-                    is Result.Error -> {
-                        _echo.value = result.exception.message
-                    }
-                    is Result.Canceled -> {
-                        _echo.value = MyApp.instance.getString(R.string.request_canceled)
-                    }
+                }
+                is Result.Error -> {
+                    _echo.value = result.exception.message
+                }
+                is Result.Canceled -> {
+                    _echo.value = MyApp.instance.getString(R.string.request_canceled)
+                }
             }
         }
     }
 
-    private suspend fun createDepartmnetInFirestore(staffId : String, user: User) {
+    private suspend fun createDepartmnetInFirestore(staffId: String, user: User) {
         when (val result = userRepository.createDepartmnetInFirestore(staffId)) {
             is Result.Success -> {
-                user.departmentId = result.data?.id
                 createUserInFirestore(staffId, user)
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
             }
@@ -58,7 +62,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
         }
     }
 
-    private suspend fun createUserInFirestore(id : String, user: User) {
+    private suspend fun createUserInFirestore(id: String, user: User) {
         when (val result = userRepository.createUserInFirestore(id, user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
@@ -90,10 +94,10 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
         }
 
         if (
-            errorFormState.usernameError == null &&
-            errorFormState.emailError == null &&
-            errorFormState.passwordError == null &&
-            errorFormState.confirmPasswordError == null
+                errorFormState.usernameError == null &&
+                errorFormState.emailError == null &&
+                errorFormState.passwordError == null &&
+                errorFormState.confirmPasswordError == null
         ) errorFormState.isDataValid = true
 
         _registerForm.value = errorFormState

@@ -1,8 +1,6 @@
 package com.citraweb.qms.ui.dashboard.ui.staff
 
-import android.content.Context
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.StringRequest
@@ -14,15 +12,12 @@ import com.citraweb.qms.data.FCMPayload
 import com.citraweb.qms.data.department.StaffRepositoryImpl
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.utils.*
-import com.google.firebase.Timestamp
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.UnsupportedEncodingException
-import java.util.*
 
 @ExperimentalCoroutinesApi
 class StaffViewModel constructor(private val staffRepositoryImpl: StaffRepositoryImpl) : MyBaseViewModel() {
@@ -51,10 +46,10 @@ class StaffViewModel constructor(private val staffRepositoryImpl: StaffRepositor
         )
     }
 
-    fun powerLongClick(powerStatus: StateDepartment) {
+    fun powerLongClick(powerStatus: StateDepartment, name : String, company : String) {
         launchDataLoad {
                 val index =  powerStatus.ordinal + 1
-                when(staffRepositoryImpl.power(StateDepartment.values()[index % 2])){
+                when(staffRepositoryImpl.updateDepartement(StateDepartment.values()[index % 2], name, company)){
                     is Result.Success -> {
                     }
                     is Result.Error -> {

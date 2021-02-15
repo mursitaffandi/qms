@@ -1,17 +1,19 @@
 package com.citraweb.qms.ui.dashboard.ui.departments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.databinding.FragmentDeparmentsBinding
 import com.citraweb.qms.ui.MyViewModelFactory
 import com.citraweb.qms.utils.Result
+import com.citraweb.qms.utils.SharePrefManager
+import com.citraweb.qms.utils.SharePrefManager.Companion.ID_USER
 
 class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
 
@@ -27,13 +29,12 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
         binding = fragmentBinding
         departmentsViewModel = ViewModelProvider(this, MyViewModelFactory())
             .get(DepartmentsViewModel::class.java)
-
         return fragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = FireDepartmentAdapter(departmentsViewModel.query, this)
+        adapter = FireDepartmentAdapter(departmentsViewModel.query, this, SharePrefManager(MyApp.instance).getFromPreference(ID_USER))
         binding?.rvQueues?.apply {
             layoutManager = LinearLayoutManager(view.context)
             adapter = this@DepartmentsFragment.adapter
@@ -44,10 +45,7 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
             when (result) {
                 is Result.Success -> {
                     val user = result.data
-                    user?.ticketParent?.let { it1 ->
-                        adapter.ticketParent = it1
-                        adapter.notifyDataSetChanged()
-                    }
+
                 }
                 is Result.Error -> {
                 }

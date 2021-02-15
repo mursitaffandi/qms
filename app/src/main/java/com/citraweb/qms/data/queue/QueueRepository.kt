@@ -10,4 +10,5 @@ interface QueueRepository {
     suspend fun joinQueue(idQueue : String, lastNumber : Int) : Result<Void?>
     fun getQueryDepartment(): FirestoreRecyclerOptions<Department?>
     suspend fun detailUser(): Flow<Result<User?>>
+    fun getQueryQueue(): FirestoreRecyclerOptions<Queue?>
 }

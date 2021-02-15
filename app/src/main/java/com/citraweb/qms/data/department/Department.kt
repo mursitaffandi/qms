@@ -52,6 +52,5 @@ data class Department(
         @get:PropertyName("amount")
         @set:PropertyName("amount")
         var amount: Int? = 0
-
 )
 
