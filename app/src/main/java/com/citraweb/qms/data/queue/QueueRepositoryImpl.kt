@@ -5,7 +5,9 @@ import com.citraweb.qms.data.department.Department
 import com.citraweb.qms.utils.*
 import com.citraweb.qms.utils.SharePrefManager.Companion.ID_USER
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -21,7 +23,8 @@ class QueueRepositoryImpl : QueueRepository {
                 .setQuery(
                         queues.whereEqualTo(
                                 QUEUE_USER,
-                                prefManager.getFromPreference(ID_USER)),
+                                prefManager.getFromPreference(ID_USER))
+                                .orderBy(QUEUE_UPDATEDAT, Query.Direction.ASCENDING),
                         Queue::class.java).build()
     }
 
@@ -42,17 +45,22 @@ class QueueRepositoryImpl : QueueRepository {
 
     override suspend fun joinQueue(idDepartment: String, idUser: String, department: Department): Result<Void?> {
         val batch = firestore.batch()
-        val ticket = department.amount?:0 + 1
+        var ticket = 1
+        department.amount?.let {
+            ticket += it
+        }
         var waiting = 0
-        department.waitings?.let {
-            waiting = it.size - department.currentQueue
+        department.waitings?.let { it1 ->
+            department.currentQueue?.let { it2 ->
+                waiting = it1.size - it2
+            }
         }
         batch.update(
                 departments.document(idDepartment),
                 mapOf(
                         DEPARTMENT_WAITINGS to FieldValue.arrayUnion(prefManager.getFromPreference(ID_USER)),
                         DEPARTMENT_AMOUNT to ticket,
-                        DEPARTMENT_UPDATEDAT to now()
+                        DEPARTMENT_UPDATEDAT to Timestamp.now()
                 )
         )
 

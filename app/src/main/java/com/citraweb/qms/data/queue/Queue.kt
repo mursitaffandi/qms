@@ -17,30 +17,38 @@ class Queue(
 
         @get:PropertyName("department")
         @set:PropertyName("department")
-        var department: String? = null,
+        var department: String? = "",
+
+        @get:PropertyName("departmentName")
+        @set:PropertyName("departmentName")
+        var departmentName: String? = "",
+
+        @get:PropertyName("departmentCompany")
+        @set:PropertyName("departmentCompany")
+        var departmentCompany: String? = "",
 
 
         @get:PropertyName("status")
         @set:PropertyName("status")
-        var status: String? = null,
+        var status: String? = "",
 
 
         @get:PropertyName("prefix")
         @set:PropertyName("prefix")
-        var prefix: String? = null,
+        var prefix: String? = "",
 
         @get:PropertyName("ticket")
         @set:PropertyName("ticket")
-        var ticket: Int? = null,
+        var ticket: Int? = 0,
 
 
         @get:PropertyName("user")
         @set:PropertyName("user")
-        var user: String? = null,
+        var user: String? = "",
 
         @get:PropertyName("caller")
         @set:PropertyName("caller")
-        var caller: String? = null,
+        var caller: String? = "",
 
 
         @get:PropertyName("waiting")

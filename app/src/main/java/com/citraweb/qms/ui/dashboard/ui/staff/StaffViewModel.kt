@@ -47,10 +47,10 @@ class StaffViewModel constructor(private val staffRepositoryImpl: StaffRepositor
         )
     }
 
-    fun powerLongClick(powerStatus: StateDepartment, name: String, company: String) {
+    fun powerLongClick(powerStatus: StateDepartment, name: String, company: String, prefix: String) {
         launchDataLoad {
             val index = powerStatus.ordinal + 1
-            when (staffRepositoryImpl.updateDepartement(StateDepartment.values()[index % 2], name, company)) {
+            when (staffRepositoryImpl.updateDepartement(StateDepartment.values()[index % 2], name, company, prefix)) {
                 is Result.Success -> { }
                 is Result.Error -> { }
                 is Result.Canceled -> { }
@@ -58,25 +58,32 @@ class StaffViewModel constructor(private val staffRepositoryImpl: StaffRepositor
         }
     }
 
-    fun setQueue(newIndex: Int) {
+    fun setQueue(newIndex: Int, idMember : String, deparmentName: String?, companyName: String?) {
         launchDataLoad {
-            //            TODO : if @currentQueue not last, update @currentQueue++
             when (staffRepositoryImpl.nextQueue(newIndex)) {
-                is Result.Success -> { }
+                is Result.Success -> {
+                    call(idMember, deparmentName, companyName)
+                    staffRepositoryImpl.updateWaiting()
+                }
                 is Result.Error -> { }
                 is Result.Canceled -> { }
             }
         }
     }
 
-    fun call(idUser: String, deparmentName: String?, companyName: String?) {
+    fun call(idUser: String, departmentName: String?, companyName: String?) {
         launchDataLoad {
             when (val fcm = staffRepositoryImpl.getFcm(idUser)) {
                 is Result.Canceled -> Timber.e(fcm.exception)
                 is Result.Error -> Timber.e(fcm.exception)
                 is Result.Success -> {
+                    when(staffRepositoryImpl.updateQueueStatus(idUser)){
+                        is Result.Canceled -> {}
+                        is Result.Error -> {}
+                        is Result.Success -> {}
+                    }
                     val payload = FCMPayload(fcm.data ?: "", Data(
-                            departmentName = deparmentName?:"",
+                            departmentName = departmentName?:"",
                             companyName = companyName?:"",
                             priority = "high"
                     ))

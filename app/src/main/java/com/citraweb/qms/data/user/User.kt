@@ -7,22 +7,22 @@ import com.google.firebase.firestore.PropertyName
 data class User(
         @get:PropertyName("email")
         @set:PropertyName("email")
-        var email: String? = null,
+        var email: String? = "",
 
         @get:PropertyName("name")
         @set:PropertyName("name")
-        var name: String? = null,
+        var name: String? = "",
 
         @get:PropertyName("departmentId")
         @set:PropertyName("departmentId")
-        var departmentId: String? = null,
+        var departmentId: String? = "",
 
         @get:PropertyName("role")
         @set:PropertyName("role")
-        var role: Int? = null,
+        var role: Int? = 0,
 
         @get:PropertyName("fcm")
         @set:PropertyName("fcm")
-        var fcm: String? = null,
+        var fcm: String? = "",
 
 )

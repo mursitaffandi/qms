@@ -28,8 +28,7 @@ class DepartmentsFragment : Fragment(), FireDepartmentAdapter.OnItemClick {
     ): View? {
         val fragmentBinding = FragmentDeparmentsBinding.inflate(inflater, container, false)
         binding = fragmentBinding
-        viewModel = ViewModelProvider(this, MyViewModelFactory())
-            .get(DepartmentsViewModel::class.java)
+        viewModel = ViewModelProvider(this, MyViewModelFactory()).get(DepartmentsViewModel::class.java)
         prefManager = SharePrefManager(requireActivity())
         idUser = prefManager.getFromPreference(ID_USER)
         return fragmentBinding.root

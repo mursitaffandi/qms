@@ -9,7 +9,7 @@ import kotlin.String
 data class Department(
         @get:PropertyName("companyId")
         @set:PropertyName("companyId")
-        var companyId: String? = null,
+        var companyId: String? = "",
 
         @get:PropertyName("createdAt")
         @set:PropertyName("createdAt")
@@ -23,31 +23,31 @@ data class Department(
 
         @get:PropertyName("name")
         @set:PropertyName("name")
-        var name: String? = null,
+        var name: String? = "",
 
 
         @get:PropertyName("prefix")
         @set:PropertyName("prefix")
-        var prefix: String? = null,
+        var prefix: String? = "",
 
         @get:PropertyName("staffId")
         @set:PropertyName("staffId")
-        var staffId: String? = null,
+        var staffId: String? = "",
 
 
         @get:PropertyName("status")
         @set:PropertyName("status")
-        var status: String? = null,
+        var status: String? = "",
 
 
         @get:PropertyName("waitings")
         @set:PropertyName("waitings")
-        var waitings: List<String>? = null,
+        var waitings: List<String>? = listOf(),
 
 
         @get:PropertyName("currentQueue")
         @set:PropertyName("currentQueue")
-        var currentQueue: Int = 0,
+        var currentQueue: Int? = 0,
 
 
         @get:PropertyName("amount")

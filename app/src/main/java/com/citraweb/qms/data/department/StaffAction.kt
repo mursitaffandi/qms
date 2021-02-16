@@ -10,8 +10,10 @@ import kotlinx.coroutines.flow.Flow
 interface StaffAction {
     fun getQueryQueue() : FirestoreRecyclerOptions<Queue?>
     suspend fun detailDepartment() : Flow<Result<Department?>>
-    suspend fun updateDepartement(action : StateDepartment, name : kotlin.String, company : kotlin.String) : Result<Void?>
+    suspend fun updateDepartement(action: StateDepartment, name: String, company: String, prefix: String) : Result<Void?>
     suspend fun nextQueue(newIndex : Int) : Result<Void?>
     suspend fun removeMember() : Result<Void?>
-    suspend fun getFcm(idUser: kotlin.String): Result<kotlin.String?>
+    suspend fun updateWaiting()
+    suspend fun getFcm(idUser: String): Result<String?>
+    suspend fun updateQueueStatus(idUser: String) : Result<Void?>
 }

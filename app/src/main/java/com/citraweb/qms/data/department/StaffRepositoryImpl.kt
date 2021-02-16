@@ -4,8 +4,10 @@ import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.queue.Queue
 import com.citraweb.qms.utils.*
 import com.citraweb.qms.utils.SharePrefManager.Companion.ID_DEPARTMENT
+import com.citraweb.qms.utils.SharePrefManager.Companion.ID_USER
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +28,8 @@ class StaffRepositoryImpl : StaffAction {
                 .setQuery(
                         queueStore.whereEqualTo(
                                 QUEUE_DEPARTMENT,
-                                prefManager.getFromPreference(ID_DEPARTMENT)),
+                                prefManager.getFromPreference(ID_DEPARTMENT)
+                        ).orderBy(QUEUE_CREATEDAT, Query.Direction.ASCENDING),
                         Queue::class.java).build()
     }
 
@@ -43,33 +46,38 @@ class StaffRepositoryImpl : StaffAction {
         awaitClose { subscription.remove() }
     }
 
-    override suspend fun updateDepartement(action: StateDepartment, name: kotlin.String, company: kotlin.String): Result<Void?> {
+    override suspend fun updateDepartement(action: StateDepartment, name: String, company: String, prefix: String): Result<Void?> {
         return try {
             if (action == StateDepartment.CLOSE) {
-                when(val u = removeMember()){
+                when (val u = removeMember()) {
                     is Result.Success -> {
                         departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).update(mapOf
                         (
 
                                 DEPARTMENT_STATUS to action.name,
                                 DEPARTMENT_NAME to name,
+                                DEPARTMENT_PREFIX to prefix,
                                 DEPARTMENT_COMPANYID to company,
                                 DEPARTMENT_WAITINGS to null,
                                 DEPARTMENT_UPDATEDAT to Timestamp.now()
                         )
                         ).await()
                     }
-                    is Result.Error -> {Result.Error(u.exception)}
-                    is Result.Canceled -> {Result.Canceled(u.exception)}
+                    is Result.Error -> {
+                        Result.Error(u.exception)
+                    }
+                    is Result.Canceled -> {
+                        Result.Canceled(u.exception)
+                    }
                 }
 
             } else
-            departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).update(mapOf
-            (
-                    DEPARTMENT_STATUS to action.name,
-                    DEPARTMENT_UPDATEDAT to Timestamp.now()
-            )
-            ).await()
+                departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).update(mapOf
+                (
+                        DEPARTMENT_STATUS to action.name,
+                        DEPARTMENT_UPDATEDAT to Timestamp.now()
+                )
+                ).await()
         } catch (e: Exception) {
             Result.Error(e)
         }
@@ -77,12 +85,16 @@ class StaffRepositoryImpl : StaffAction {
 
     override suspend fun nextQueue(newIndex: Int): Result<Void?> {
         return try {
-            departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).update(mapOf
-            (
-                    DEPARTMENT_CURRENTQUEUE to newIndex,
-                    DEPARTMENT_UPDATEDAT to Timestamp.now()
+            val batch = db.batch()
+            batch.update(
+                    departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)),
+                    mapOf(
+                            DEPARTMENT_CURRENTQUEUE to newIndex,
+                            DEPARTMENT_UPDATEDAT to Timestamp.now()
+                    )
             )
-            ).await()
+
+            batch.commit().await()
         } catch (e: Exception) {
             Result.Error(e)
         }
@@ -113,7 +125,42 @@ class StaffRepositoryImpl : StaffAction {
         }
     }
 
-    override suspend fun getFcm(idUser: kotlin.String): Result<kotlin.String?> {
+    override suspend fun updateWaiting() {
+        try {
+            when (val members = queueStore.whereEqualTo(QUEUE_DEPARTMENT, prefManager.getFromPreference(ID_DEPARTMENT)).get().await()) {
+                is Result.Success -> {
+                    members.data.documents.forEach { docSnap ->
+                        db.runTransaction {
+                            val docRef = queueStore.document(docSnap.id)
+                            val snap = it.get(docRef)
+                            var waiting = 0L
+                            snap.getLong(QUEUE_WAITING)?.let { it1 ->
+                                if (it1 > 0) {
+                                    waiting = it1 - 1
+                                }
+                            }
+
+                            if (waiting > 0) {
+                                it.update(docRef, QUEUE_WAITING, waiting)
+                            }
+                        }.addOnSuccessListener {
+
+                        }
+                    }
+                }
+                is Result.Error -> {
+                    Result.Error(members.exception)
+                }
+                is Result.Canceled -> {
+                    Result.Canceled(members.exception)
+                }
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun getFcm(idUser: String): Result<String?> {
         return try {
             when (val fcm = userStore.document(idUser).get().await()) {
                 is Result.Error -> {
@@ -124,6 +171,38 @@ class StaffRepositoryImpl : StaffAction {
                 }
                 is Result.Success -> {
                     Result.Success(fcm.data.get(USER_FCM).toString())
+                }
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun updateQueueStatus(idUser: String): Result<Void?> {
+        return try {
+            when (val myQueue = queueStore
+                    .whereEqualTo(QUEUE_USER, idUser)
+                    .whereEqualTo(QUEUE_DEPARTMENT, prefManager.getFromPreference(ID_DEPARTMENT))
+                    .get().await()
+            ) {
+                is Result.Error -> {
+                    Result.Error(myQueue.exception)
+                }
+                is Result.Canceled -> {
+                    Result.Canceled(myQueue.exception)
+                }
+                is Result.Success -> {
+                    val batch = db.batch()
+                    myQueue.data.documents.forEach { docSnap ->
+                        batch.update(
+                                queueStore.document(docSnap.id), mapOf(
+                                QUEUE_STATUS to StateQueue.CALLED.name,
+                                QUEUE_UPDATEDAT to Timestamp.now(),
+                                QUEUE_CALLER to prefManager.getFromPreference(ID_USER)
+                        )
+                        )
+                    }
+                    batch.commit().await()
                 }
             }
         } catch (e: Exception) {

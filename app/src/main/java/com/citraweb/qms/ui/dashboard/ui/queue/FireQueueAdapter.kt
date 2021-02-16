@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.citraweb.qms.data.queue.Queue
 import com.citraweb.qms.databinding.ItemQueueBinding
+import com.citraweb.qms.utils.convertTime
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -17,15 +18,19 @@ class FireQueueAdapter(
 ) :
     FirestoreRecyclerAdapter<Queue, FireQueueAdapter.QueueHolder>(options) {
     override fun onBindViewHolder(holder: QueueHolder, position: Int, model: Queue) {
-        val idDocument = snapshots.getSnapshot(position).id
+        holder.binding.tvTicketDate.text = model.createdAt?.let { convertTime(it) }
+        holder.binding.tvTicketNumber.text = "${model.prefix}-${model.ticket}"
+        holder.binding.tvTicketCompany.text = model.departmentCompany
+        holder.binding.tvTicketDepartment.text = model.departmentName
+        holder.binding.tvTicketWaiting.text = "Jumlah Menunggu : ${model.waiting.toString()}"
+        holder.binding.tvTicket.text = model.status
         holder.itemView.setOnClickListener {
             callback.click(model.user, model.department)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QueueHolder {
-        val binding = ItemQueueBinding
-            .inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemQueueBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QueueHolder(binding)
     }
 
@@ -35,12 +40,11 @@ class FireQueueAdapter(
     }
 
     override fun onError(e: FirebaseFirestoreException) {
-        Timber.tag("FirestoreException").e(e);
+        Timber.tag("FireStoreException").e(e)
         super.onError(e)
     }
 
-    inner class QueueHolder(val binding: ItemQueueBinding)
-        :RecyclerView.ViewHolder(binding.root)
+    inner class QueueHolder(val binding: ItemQueueBinding) :RecyclerView.ViewHolder(binding.root)
 
     interface OnItemClick{
         fun size(itemCount: Int)

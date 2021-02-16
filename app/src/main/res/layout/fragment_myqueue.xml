@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.ui.queue.MyqueueFragment">
+    tools:context=".ui.dashboard.ui.queue.MyTicketFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_queues_ticket"

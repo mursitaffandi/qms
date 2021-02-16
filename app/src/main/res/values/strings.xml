@@ -62,5 +62,6 @@
     <string name="department_name">Department Name</string>
     <string name="department_company">Company Name</string>
     <string name="title_dialog_department">Info Department</string>
+    <string name="department_prefix">Prefix</string>
 
 </resources>

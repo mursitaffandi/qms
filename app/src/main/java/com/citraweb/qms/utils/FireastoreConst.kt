@@ -30,12 +30,16 @@ const val USER_TICKETPARENT = "ticketParent"
 
 
 const val QUEUE_CREATEDAT = "createdAt"
+const val QUEUE_UPDATEDAT = "updatedAt"
 const val QUEUE_DEPARTMENT = "department"
+const val QUEUE_DEPARTMENT_NAME = "departmentName"
+const val QUEUE_DEPARTMENT_COMPANY = "departmentCompany"
 const val QUEUE_STATUS = "status"
 const val QUEUE_PREFIX = "prefix"
 const val QUEUE_TICKET = "ticket"
 const val QUEUE_USER = "user"
 const val QUEUE_WAITING = "waiting"
+const val QUEUE_CALLER = "caller"
 
 
 const val URL_FCM = "https://fcm.googleapis.com/fcm/send"

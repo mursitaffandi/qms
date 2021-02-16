@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.citraweb.qms.R
-import com.citraweb.qms.data.user.User
 import com.citraweb.qms.databinding.DialogInfoDepartmentBinding
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
@@ -19,12 +18,17 @@ import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.StateDepartment
 import com.citraweb.qms.utils.toas
 import com.ncorti.slidetoact.SlideToActView
+import timber.log.Timber
 
 
 class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
 
+    private lateinit var powerStatus: StateDepartment
     private lateinit var departmentName: String
     private lateinit var company: String
+    private lateinit var prefix: String
+    private var queue = listOf<String>()
+    private var currentIndexWaiting = 0
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
     private lateinit var adapter: FireQueueAdapter
@@ -32,9 +36,6 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
             R.drawable.ic_baseline_stop_24,
             R.drawable.ic_baseline_play_arrow_24
     )
-    private lateinit var powerStatus: StateDepartment
-    private var currentIndexWaiting = 0
-    private var amountQueue = 0
 
 
     override fun onCreateView(
@@ -68,7 +69,7 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
                         }
 
                         it.waitings?.let { it1 ->
-                            amountQueue = it1.size
+                            queue = it1
                         }
 
                         it.companyId?.let { it1 ->
@@ -78,11 +79,17 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
                         it.name?.let { it1 ->
                             departmentName = it1
                         }
+
+                        it.prefix?.let { it1 ->
+                            prefix = it1
+                        }
                     }
                 }
                 is Result.Error -> {
+                    Timber.e(result.exception)
                 }
                 is Result.Canceled -> {
+                    Timber.e(result.exception)
                 }
             }
         })
@@ -98,14 +105,13 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
             layoutManager = LinearLayoutManager(view.context)
             adapter = this@StaffFragment.adapter
         }
-
         adapter.notifyDataSetChanged()
 
         binding?.ivPower?.setOnLongClickListener {
-            if (departmentName.isEmpty() || company.isEmpty())
+            if (departmentName.isEmpty() || company.isEmpty() || prefix.isEmpty())
                 dialogInfoDepartment()
-             else
-                viewModel.powerLongClick(powerStatus, departmentName, company)
+            else
+                viewModel.powerLongClick(powerStatus, departmentName, company, prefix)
             true
         }
 
@@ -116,9 +122,9 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
         binding?.staffSlider?.onSlideCompleteListener =
                 object : SlideToActView.OnSlideCompleteListener {
                     override fun onSlideComplete(view: SlideToActView) {
-                        if (currentIndexWaiting < amountQueue) {
+                        if (currentIndexWaiting < queue.size) {
                             val nextIndex = currentIndexWaiting + 1
-                            viewModel.setQueue(nextIndex)
+                            viewModel.setQueue(nextIndex, queue[nextIndex], departmentName, company)
                             binding?.staffSlider?.bumpVibration = 50
                         }
                     }
@@ -127,19 +133,17 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
 
     private fun dialogInfoDepartment() {
         val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle(context?.getString(R.string.title_dialog_department))
         val dialogLayout = DialogInfoDepartmentBinding.inflate(LayoutInflater.from(context), null, false)
-        val edtCompany = dialogLayout.tietDepartmentCompany
-        val edtName = dialogLayout.tietDepartmentName
+        builder.setTitle(context?.getString(R.string.title_dialog_department))
         builder.setView(dialogLayout.root)
-        
         builder.setPositiveButton("OK") { dialogInterface, i ->
-            company = edtCompany.text.toString()
-            departmentName = edtName.text.toString()
-            if (departmentName.isEmpty() || company.isEmpty()){
+            company = dialogLayout.tietDepartmentCompany.text.toString()
+            departmentName = dialogLayout.tietDepartmentName.text.toString()
+            prefix = dialogLayout.tietDepartmentPrefix.text.toString()
+            if (departmentName.isEmpty() || company.isEmpty() || prefix.isEmpty()) {
                 return@setPositiveButton
             } else {
-                viewModel.powerLongClick(powerStatus, departmentName, company)
+                viewModel.powerLongClick(powerStatus, departmentName, company, prefix)
             }
         }
         builder.show()
@@ -161,8 +165,10 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
         adapter.stopListening()
     }
 
-    override fun click(idUser: String?, department: String?) {
-        idUser?.let { viewModel.call(it, departmentName, company) }
+    override fun click(idUser: String?, departmentId: String?) {
+        idUser?.let {
+            viewModel.call(it, departmentName, company)
+        }
     }
 
     override fun size(itemCount: Int) {
