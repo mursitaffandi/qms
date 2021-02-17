@@ -1,18 +1,17 @@
 package com.citraweb.qms.service
 
-import android.app.NotificationManager
-import android.content.Context
+import android.os.PowerManager
 import android.util.Log
-import com.citraweb.qms.data.Data
 import com.citraweb.qms.data.user.UserRepositoryImpl
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.Gson
 import timber.log.Timber
 
 
 class MyMessagingService : FirebaseMessagingService() {
     private lateinit var viewmodel: MyMessagingViewModel
+    private val pm : PowerManager = getSystemService(POWER_SERVICE) as PowerManager
+
     companion object {
         var isDashboardForeGround = false
     }
@@ -28,13 +27,6 @@ class MyMessagingService : FirebaseMessagingService() {
         // Get updated InstanceID token.
         Log.d("onNewToken", "Refreshed token: $p0")
 
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
 //       TODO : sendRegistrationToServer(refreshedToken)
         viewmodel.sendNewToken(p0)
     }
@@ -50,12 +42,15 @@ class MyMessagingService : FirebaseMessagingService() {
         if (remoteMessage.data.isNotEmpty()) {
             viewmodel.processPayload(remoteMessage)
             Timber.d("Message data payload: %s", remoteMessage.data)
-            if ( /* Check if data needs to be processed by long running job */true) {
-                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-//               TODO : scheduleJob()
-            } else {
-                // Handle message within 10 seconds
-//              TODO:  handleNow()
+
+            if (!pm.isScreenOn) {
+                val wl = pm.newWakeLock(
+                    PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
+                    "AppName:tag"
+                )
+                wl.acquire(10000)
+                val wlCpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AppName:tag")
+                wlCpu.acquire(10000)
             }
         }
 
@@ -64,8 +59,5 @@ class MyMessagingService : FirebaseMessagingService() {
             Timber.d("Message Notification Body: %s", remoteMessage.notification!!.body)
 
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
 }

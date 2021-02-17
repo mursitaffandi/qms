@@ -45,7 +45,6 @@ class DashboardActivity : AppCompatActivity() {
                 val data = it.getParcelableExtra<Data>(KEY_EXTRA_BROADCAST)
                 Timber.tag("terima").d(data.departmentName)
                 navController.navigate(R.id.nav_gallery)
-
             }
         }
     }
