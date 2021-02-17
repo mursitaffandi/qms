@@ -56,7 +56,7 @@ class RegisterActivity : AppCompatActivity() {
             val result = it ?: return@Observer
 
             binding.spinnerRegister.visibility = View.GONE
-            toas(getString(result.message)).show()
+            result.message?.let { it1 -> toas(getString(it1)).show() }
             if (result.success != null) {
                 startActivity<DashboardActivity>()
                 finish()

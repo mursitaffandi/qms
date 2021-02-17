@@ -2,5 +2,6 @@ package com.citraweb.qms.data
 
 data class ResultData<out T>(
     val success : T? = null,
-    val message : Int
+    val loading : Boolean? = null,
+    val message : Int? = null
 )

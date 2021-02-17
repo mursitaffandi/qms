@@ -39,26 +39,12 @@ class ForgetPasswordActivity : AppCompatActivity() {
 
         })
 
-        viewModel.currentUserLD.observe(this@ForgetPasswordActivity, Observer {
-            val result = it ?: return@Observer
-
-            binding.spinnerLogin.visibility = View.GONE
-            if (result.message != null) {
-                toas(getString(result.message)).show()
-            }
-            if (result.success != null) {
-                startActivity<DashboardActivity>()
-                finish()
-            }
-        })
 
         binding.tietLoginEmail.afterTextChanged {
             viewModel.loginDataChanged(
                 binding.tietLoginEmail.text.toString()
             )
         }
-
-
 
 
         viewModel.toast.observe(this, { message ->
@@ -72,6 +58,24 @@ class ForgetPasswordActivity : AppCompatActivity() {
             value.let { show ->
                 binding.spinnerLogin.visibility = if (show) View.VISIBLE else View.GONE
             }
+        })
+
+        binding.btnLogin.setOnClickListener {
+            viewModel.sendResetPassword(binding.tietLoginEmail.text.toString())
+        }
+
+        viewModel.requestPassword.observe(this@ForgetPasswordActivity, Observer{ resultData ->
+            val state = resultData ?: return@Observer
+            state.success?.let {
+                if (it){
+                    finish()
+                }
+            }
+
+            state.loading?.let {
+                binding.btnLogin.isEnabled = !it
+            }
+
         })
     }
 }
