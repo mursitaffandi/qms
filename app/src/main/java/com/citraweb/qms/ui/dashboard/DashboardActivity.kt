@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -63,9 +64,10 @@ class DashboardActivity : AppCompatActivity() {
             keyguardManager.requestDismissKeyguard(this, null)
         } else {
             this.window.addFlags(
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+            )
         }
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -106,6 +108,11 @@ class DashboardActivity : AppCompatActivity() {
                 intent?.getParcelableExtra<Data>("")?.let {
                     navController.navigate(R.id.nav_gallery)
                 }
+                val headerView = navView.getHeaderView(0)
+                val navUsername = headerView.findViewById(R.id.header_tv_username) as TextView
+                val navUserEmail = headerView.findViewById(R.id.header_tv_email) as TextView
+                navUsername.text = result.success.name
+                navUserEmail.text = result.success.email
             }
         })
     }

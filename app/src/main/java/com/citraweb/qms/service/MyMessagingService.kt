@@ -10,7 +10,6 @@ import timber.log.Timber
 
 class MyMessagingService : FirebaseMessagingService() {
     private lateinit var viewmodel: MyMessagingViewModel
-    private val pm : PowerManager = getSystemService(POWER_SERVICE) as PowerManager
 
     companion object {
         var isDashboardForeGround = false
@@ -42,16 +41,6 @@ class MyMessagingService : FirebaseMessagingService() {
         if (remoteMessage.data.isNotEmpty()) {
             viewmodel.processPayload(remoteMessage)
             Timber.d("Message data payload: %s", remoteMessage.data)
-
-            if (!pm.isScreenOn) {
-                val wl = pm.newWakeLock(
-                    PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
-                    "AppName:tag"
-                )
-                wl.acquire(10000)
-                val wlCpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AppName:tag")
-                wlCpu.acquire(10000)
-            }
         }
 
         // Check if message contains a notification payload.
