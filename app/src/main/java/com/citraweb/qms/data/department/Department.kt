@@ -3,7 +3,6 @@ package com.citraweb.qms.data.department
 import androidx.annotation.Keep
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
-import kotlin.String
 
 @Keep
 data class Department(

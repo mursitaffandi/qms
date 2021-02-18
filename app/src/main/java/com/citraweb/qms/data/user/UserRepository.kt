@@ -20,4 +20,5 @@ interface UserRepository
     fun setDepartmentId(it: String)
     suspend fun updateFcmToken(newToken: String): Result<Void?>
     suspend fun sendPasswordResetEmail(email: String): Result<Void?>
+    fun deleteAll()
 }

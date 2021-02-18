@@ -1,6 +1,5 @@
 package com.citraweb.qms.ui.dashboard
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -62,6 +61,7 @@ class DashboardViewModel(private val repository: UserRepository) : MyBaseViewMod
                     }
                 }
                 is Result.Error -> {
+                    Timber.e(result.exception)
                     _currentUserMLD.value = ResultData(
                         success = null,
                         message = R.string.logout

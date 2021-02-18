@@ -48,7 +48,7 @@ class StaffRepositoryImpl : StaffAction {
 
     override suspend fun updateDepartement(action: StateDepartment, name: String, company: String, prefix: String): Result<Void?> {
         return try {
-            if (action == StateDepartment.CLOSE) {
+            if (action == StateDepartment.OPEN) {
                 when (val u = removeMember()) {
                     is Result.Success -> {
                         departmentStore.document(prefManager.getFromPreference(ID_DEPARTMENT)).update(mapOf

@@ -1,6 +1,5 @@
 package com.citraweb.qms.service
 
-import android.os.PowerManager
 import android.util.Log
 import com.citraweb.qms.data.user.UserRepositoryImpl
 import com.google.firebase.messaging.FirebaseMessagingService

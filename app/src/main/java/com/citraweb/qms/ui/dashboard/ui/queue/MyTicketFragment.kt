@@ -7,11 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.citraweb.qms.R
 import com.citraweb.qms.databinding.FragmentMyqueueBinding
-import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
-import com.citraweb.qms.ui.dashboard.ui.staff.StaffViewModel
 
 class MyTicketFragment : Fragment(), FireQueueAdapter.OnItemClick {
 

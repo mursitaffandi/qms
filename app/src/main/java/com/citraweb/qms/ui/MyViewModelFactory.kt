@@ -2,7 +2,6 @@ package com.citraweb.qms.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.citraweb.qms.MyApp
 import com.citraweb.qms.data.department.StaffRepositoryImpl
 import com.citraweb.qms.data.queue.QueueRepositoryImpl
 import com.citraweb.qms.data.user.UserRepositoryImpl

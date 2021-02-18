@@ -122,8 +122,8 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
         binding?.staffSlider?.onSlideCompleteListener =
                 object : SlideToActView.OnSlideCompleteListener {
                     override fun onSlideComplete(view: SlideToActView) {
-                        if (currentIndexWaiting < queue.size) {
-                            val nextIndex = currentIndexWaiting + 1
+                        if (queue.size > currentIndexWaiting ) {
+                            val nextIndex = 1+currentIndexWaiting
                             viewModel.setQueue(nextIndex, queue[nextIndex], departmentName, company)
                             binding?.staffSlider?.bumpVibration = 50
                         }

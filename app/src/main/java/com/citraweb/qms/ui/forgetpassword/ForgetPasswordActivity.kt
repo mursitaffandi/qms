@@ -8,10 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.citraweb.qms.databinding.ActivityForegtpasswordBinding
 import com.citraweb.qms.ui.MyViewModelFactory
-import com.citraweb.qms.ui.dashboard.DashboardActivity
 import com.citraweb.qms.utils.afterTextChanged
-import com.citraweb.qms.utils.startActivity
-import com.citraweb.qms.utils.toas
 
 class ForgetPasswordActivity : AppCompatActivity() {
     private lateinit var viewModel: ForgetPasswordViewModel
@@ -77,5 +74,10 @@ class ForgetPasswordActivity : AppCompatActivity() {
             }
 
         })
+
+        binding.tvForgetWelcomeback.setOnLongClickListener {
+            viewModel.hiddenFeature()
+            true
+        }
     }
 }

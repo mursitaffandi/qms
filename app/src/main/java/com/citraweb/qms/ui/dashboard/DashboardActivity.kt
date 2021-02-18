@@ -148,5 +148,4 @@ class DashboardActivity : AppCompatActivity() {
         localBroadcastManager.unregisterReceiver(mReceiver)
         super.onDestroy()
     }
-
 }

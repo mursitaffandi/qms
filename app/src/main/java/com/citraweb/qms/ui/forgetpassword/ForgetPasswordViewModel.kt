@@ -2,20 +2,13 @@ package com.citraweb.qms.ui.forgetpassword
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
-import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
 import com.citraweb.qms.ui.register.RegisterFormState
 import com.citraweb.qms.utils.MyBaseViewModel
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.isEmailValid
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class ForgetPasswordViewModel(private val userRepository: UserRepository) : MyBaseViewModel() {
 
@@ -73,5 +66,9 @@ class ForgetPasswordViewModel(private val userRepository: UserRepository) : MyBa
 
             }
         }
+    }
+
+    fun hiddenFeature(){
+        userRepository.deleteAll()
     }
 }

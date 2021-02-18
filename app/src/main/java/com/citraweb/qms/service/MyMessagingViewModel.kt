@@ -60,27 +60,27 @@ class MyMessagingViewModel(private val ctx: Context, private val repository: Use
 
     fun processPayload(message: RemoteMessage) {
         if (prefmanager.getFromPreference(ID_USER).isNotEmpty()) {
-            val data = Intent()
-            data.action = ACTION_BROADCAST_CALLED_QUEUE
-            data.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
             if (message.data.isNotEmpty()) {
                 val fcmData = gson.fromJson(
                         gson.toJson(message.data),
                         Data::class.java)
-
-                data.putExtra(KEY_EXTRA_BROADCAST, fcmData)
-                if (isDashboardForeGround)
-                    localBroadcastManager.sendBroadcast(data)
-                else {
-                    data.component = ComponentName(ctx, DashboardActivity::class.java)
-                    ctx.startActivity(data)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        // only for gingerbread and newer versions
-//                        TODO : Display notif and sound
-                        displayNotification(data, ctx, fcmData.companyName, fcmData.departmentName)
-                    }
-
+                val intentNotif = Intent(ctx, DashboardActivity::class.java)
+                intentNotif.apply {
+                    putExtra(KEY_EXTRA_BROADCAST, fcmData)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                displayNotification(intentNotif, ctx, fcmData.companyName, fcmData.departmentName)
+                if (!isDashboardForeGround) {
+                    val intent = Intent(ctx, DashboardActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.putExtra(KEY_EXTRA_BROADCAST, fcmData)
+                    ctx.startActivity(intent)
+                } else {
+                    val intent = Intent()
+                    intent.action = ACTION_BROADCAST_CALLED_QUEUE
+                    intent.putExtra(KEY_EXTRA_BROADCAST, fcmData)
+                    localBroadcastManager.sendBroadcast(intent)
                 }
             }
 
