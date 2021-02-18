@@ -47,11 +47,7 @@ class DashboardViewModel(private val repository: UserRepository) : MyBaseViewMod
                         FirebaseMessaging.getInstance().token.addOnCompleteListener(
                             OnCompleteListener { task ->
                                 if (!task.isSuccessful) {
-                                    Log.w(
-                                        "FirebaseMessaging",
-                                        "Fetching FCM registration token failed",
-                                        task.exception
-                                    )
+                                    Timber.w(task.exception, "Fetching FCM registration token failed")
                                     return@OnCompleteListener
                                 }
                                 // Get new FCM registration token
