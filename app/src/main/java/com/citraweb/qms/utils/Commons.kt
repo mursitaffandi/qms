@@ -1,6 +1,7 @@
 
 package com.citraweb.qms.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.util.Patterns
 import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
 import java.util.*
 
 // A placeholder username validation check
@@ -78,10 +80,17 @@ startActivity<MainActivity>{
 /**
 * Don't forget to show manually
 * */
-fun Context.toas(msg : String): Toast {
+fun Context.toas(msg: String): Toast {
     return Toast.makeText(this, msg, Toast.LENGTH_LONG)
 }
 
 fun now(): Timestamp {
   return Timestamp(Date())
+}
+
+@SuppressLint("SimpleDateFormat")
+fun convertTime(time: Timestamp) : String {
+    val date = time.toDate()
+    val sfd = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    return sfd.format(date)
 }

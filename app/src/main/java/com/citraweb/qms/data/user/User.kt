@@ -1,49 +1,28 @@
 package com.citraweb.qms.data.user
 
 import androidx.annotation.Keep
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.PropertyName
 
 @Keep
 data class User(
         @get:PropertyName("email")
         @set:PropertyName("email")
-        var email: String? = null,
+        var email: String? = "",
 
         @get:PropertyName("name")
         @set:PropertyName("name")
-        var name: String? = null,
+        var name: String? = "",
 
         @get:PropertyName("departmentId")
         @set:PropertyName("departmentId")
-        var departmentId: String? = null,
+        var departmentId: String? = "",
 
         @get:PropertyName("role")
         @set:PropertyName("role")
-        var role: Int? = null,
+        var role: Int? = 0,
 
         @get:PropertyName("fcm")
         @set:PropertyName("fcm")
-        var fcm: String? = null,
+        var fcm: String? = "",
 
-        @get:PropertyName("ticket")
-        @set:PropertyName("ticket")
-        var ticket: Int? = null,
-
-        @get:PropertyName("ticketParent")
-        @set:PropertyName("ticketParent")
-        var ticketParent: String? = null,
-) {
-    constructor(
-            firebaseUser: FirebaseUser,
-            name: String,
-    ) : this(
-            email = firebaseUser.email,
-            name = name,
-            departmentId = "",
-            role = 2,
-            fcm = "",
-            ticket = 2,
-            ticketParent = "",
-            )
-}
+)

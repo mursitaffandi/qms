@@ -59,6 +59,10 @@
     <string name="click_staff_power_off">Tahan Tombol Stop Untuk Menutup Antrian</string>
     <string name="click_staff_power_on">Tahan Tombol Stop Untuk Membuka Antrian</string>
     <string name="logout">Logout</string>
+    <string name="department_name">Department Name</string>
+    <string name="department_company">Company Name</string>
+    <string name="title_dialog_department">Info Department</string>
+    <string name="department_prefix">Prefix</string>
     <string name="success_request_password">Success Request Reset Password</string>
     <string name="unsuccess_request_password">Fail Request Reset Password</string>
 

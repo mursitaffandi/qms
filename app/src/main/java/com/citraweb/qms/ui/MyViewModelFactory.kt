@@ -8,6 +8,7 @@ import com.citraweb.qms.data.queue.QueueRepositoryImpl
 import com.citraweb.qms.data.user.UserRepositoryImpl
 import com.citraweb.qms.ui.dashboard.DashboardViewModel
 import com.citraweb.qms.ui.dashboard.ui.departments.DepartmentsViewModel
+import com.citraweb.qms.ui.dashboard.ui.queue.MyTicketViewModel
 import com.citraweb.qms.ui.dashboard.ui.staff.StaffViewModel
 import com.citraweb.qms.ui.forgetpassword.ForgetPasswordViewModel
 import com.citraweb.qms.ui.login.LoginViewModel
@@ -35,6 +36,10 @@ class MyViewModelFactory : ViewModelProvider.Factory {
         ) as T
 
         if (modelClass.isAssignableFrom(DepartmentsViewModel::class.java)) return DepartmentsViewModel(
+            QueueRepositoryImpl()
+        ) as T
+
+        if (modelClass.isAssignableFrom(MyTicketViewModel::class.java)) return MyTicketViewModel(
             QueueRepositoryImpl()
         ) as T
 

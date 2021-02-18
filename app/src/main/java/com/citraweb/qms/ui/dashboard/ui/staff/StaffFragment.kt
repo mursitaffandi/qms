@@ -4,47 +4,48 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.citraweb.qms.R
-import com.citraweb.qms.data.user.User
+import com.citraweb.qms.databinding.DialogInfoDepartmentBinding
 import com.citraweb.qms.databinding.FragmentStaffBinding
 import com.citraweb.qms.ui.MyViewModelFactory
+import com.citraweb.qms.ui.dashboard.ui.queue.FireQueueAdapter
 import com.citraweb.qms.utils.Result
 import com.citraweb.qms.utils.StateDepartment
 import com.citraweb.qms.utils.toas
 import com.ncorti.slidetoact.SlideToActView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 
 
-class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
+class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
 
+    private lateinit var powerStatus: StateDepartment
     private lateinit var departmentName: String
     private lateinit var company: String
+    private lateinit var prefix: String
+    private var queue = listOf<String>()
+    private var currentIndexWaiting = 0
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
-    private lateinit var memberAdapter: FireMemberAdapter
+    private lateinit var adapter: FireQueueAdapter
     private val iconPower = listOf(
-        R.drawable.ic_baseline_stop_24,
-        R.drawable.ic_baseline_play_arrow_24
+            R.drawable.ic_baseline_stop_24,
+            R.drawable.ic_baseline_play_arrow_24
     )
-    private lateinit var powerStatus: StateDepartment
-    private var currentIndexWaiting = 0
-    private var amountQueue = 0
 
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val fragmentBinding = FragmentStaffBinding.inflate(inflater, container, false)
         binding = fragmentBinding
-        viewModel = ViewModelProvider(this, MyViewModelFactory())
-            .get(StaffViewModel::class.java)
-
+        viewModel = ViewModelProvider(this, MyViewModelFactory()).get(StaffViewModel::class.java)
         return fragmentBinding.root
     }
 
@@ -68,7 +69,7 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
                         }
 
                         it.waitings?.let { it1 ->
-                            amountQueue = it1.size
+                            queue = it1
                         }
 
                         it.companyId?.let { it1 ->
@@ -78,10 +79,18 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
                         it.name?.let { it1 ->
                             departmentName = it1
                         }
+
+                        it.prefix?.let { it1 ->
+                            prefix = it1
+                        }
                     }
                 }
-                is Result.Error -> {}
-                is Result.Canceled -> {}
+                is Result.Error -> {
+                    Timber.e(result.exception)
+                }
+                is Result.Canceled -> {
+                    Timber.e(result.exception)
+                }
             }
         })
 
@@ -90,17 +99,19 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
             view.context.toas(message).show()
         })
 
-        memberAdapter = FireMemberAdapter(viewModel.query, this)
+        adapter = FireQueueAdapter(viewModel.query, this)
 
         binding?.rvStaff?.apply {
             layoutManager = LinearLayoutManager(view.context)
-            adapter = this@StaffFragment.memberAdapter
+            adapter = this@StaffFragment.adapter
         }
-
-        memberAdapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
 
         binding?.ivPower?.setOnLongClickListener {
-            viewModel.powerLongClick(powerStatus)
+            if (departmentName.isEmpty() || company.isEmpty() || prefix.isEmpty())
+                dialogInfoDepartment()
+            else
+                viewModel.powerLongClick(powerStatus, departmentName, company, prefix)
             true
         }
 
@@ -109,16 +120,35 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
         }
 
         binding?.staffSlider?.onSlideCompleteListener =
-            object : SlideToActView.OnSlideCompleteListener {
-                override fun onSlideComplete(view: SlideToActView) {
-                    if (currentIndexWaiting < amountQueue) {
-                        val nextIndex = currentIndexWaiting + 1
-                        viewModel.setQueue(nextIndex)
-                        binding?.staffSlider?.bumpVibration = 50
+                object : SlideToActView.OnSlideCompleteListener {
+                    override fun onSlideComplete(view: SlideToActView) {
+                        if (currentIndexWaiting < queue.size) {
+                            val nextIndex = currentIndexWaiting + 1
+                            viewModel.setQueue(nextIndex, queue[nextIndex], departmentName, company)
+                            binding?.staffSlider?.bumpVibration = 50
+                        }
                     }
                 }
-            }
     }
+
+    private fun dialogInfoDepartment() {
+        val builder = AlertDialog.Builder(requireActivity())
+        val dialogLayout = DialogInfoDepartmentBinding.inflate(LayoutInflater.from(context), null, false)
+        builder.setTitle(context?.getString(R.string.title_dialog_department))
+        builder.setView(dialogLayout.root)
+        builder.setPositiveButton("OK") { dialogInterface, i ->
+            company = dialogLayout.tietDepartmentCompany.text.toString()
+            departmentName = dialogLayout.tietDepartmentName.text.toString()
+            prefix = dialogLayout.tietDepartmentPrefix.text.toString()
+            if (departmentName.isEmpty() || company.isEmpty() || prefix.isEmpty()) {
+                return@setPositiveButton
+            } else {
+                viewModel.powerLongClick(powerStatus, departmentName, company, prefix)
+            }
+        }
+        builder.show()
+    }
+
 
     override fun onDestroyView() {
         binding = null
@@ -127,16 +157,18 @@ class StaffFragment : Fragment(), FireMemberAdapter.OnItemClick {
 
     override fun onStart() {
         super.onStart()
-        memberAdapter.startListening()
+        adapter.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        memberAdapter.stopListening()
+        adapter.stopListening()
     }
 
-    override fun click(S: User, idSnapshot: String) {
-        viewModel.call(S, departmentName, company)
+    override fun click(idUser: String?, departmentId: String?) {
+        idUser?.let {
+            viewModel.call(it, departmentName, company)
+        }
     }
 
     override fun size(itemCount: Int) {

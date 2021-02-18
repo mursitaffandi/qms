@@ -6,31 +6,52 @@ import com.google.firebase.firestore.PropertyName
 
 @Keep
 class Queue(
-        @get:PropertyName("name")
-        @set:PropertyName("name")
-        var name: String? = null,
+        @get:PropertyName("createdAt")
+        @set:PropertyName("createdAt")
+        var createdAt: Timestamp? = Timestamp.now(),
 
-        @get:PropertyName("company_id")
-        @set:PropertyName("company_id")
-        var companyId: String? = null,
+        @get:PropertyName("updatedAt")
+        @set:PropertyName("updatedAt")
+        var updatedAt: Timestamp? = Timestamp.now(),
 
-        @get:PropertyName("created_at")
-        @set:PropertyName("created_at")
-        var createdAt: Timestamp? = null,
 
-        @get:PropertyName("current_queue")
-        @set:PropertyName("current_queue")
-        var currentQueue: Int? = null,
+        @get:PropertyName("department")
+        @set:PropertyName("department")
+        var department: String? = "",
 
-        @get:PropertyName("is_open")
-        @set:PropertyName("is_open")
-        var isOpen: Boolean? = null,
+        @get:PropertyName("departmentName")
+        @set:PropertyName("departmentName")
+        var departmentName: String? = "",
+
+        @get:PropertyName("departmentCompany")
+        @set:PropertyName("departmentCompany")
+        var departmentCompany: String? = "",
+
+
+        @get:PropertyName("status")
+        @set:PropertyName("status")
+        var status: String? = "",
+
 
         @get:PropertyName("prefix")
         @set:PropertyName("prefix")
-        var prefix: String? = null,
+        var prefix: String? = "",
+
+        @get:PropertyName("ticket")
+        @set:PropertyName("ticket")
+        var ticket: Int? = 0,
+
+
+        @get:PropertyName("user")
+        @set:PropertyName("user")
+        var user: String? = "",
+
+        @get:PropertyName("caller")
+        @set:PropertyName("caller")
+        var caller: String? = "",
+
 
         @get:PropertyName("waiting")
         @set:PropertyName("waiting")
-        var waiting: Int? = null
-)
+        var waiting: Int? = 0,
+        )

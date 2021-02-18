@@ -2,14 +2,12 @@ package com.citraweb.qms.ui.register
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.citraweb.qms.MyApp
 import com.citraweb.qms.R
 import com.citraweb.qms.data.ResultData
 import com.citraweb.qms.data.user.User
 import com.citraweb.qms.data.user.UserRepository
 import com.citraweb.qms.utils.*
-import kotlinx.coroutines.launch
 
 
 class RegisterViewModel(private val userRepository: UserRepository) : MyBaseViewModel() {
@@ -29,7 +27,13 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
                         userRepository.registerUserFromAuthWithEmailAndPassword(name, email, password)) {
                     is Result.Success -> {
                         result.data?.let { firebaseUser ->
-                            createDepartmnetInFirestore(firebaseUser.uid, User(firebaseUser, name))
+                            createDepartmnetInFirestore(firebaseUser.uid, User(
+                                    firebaseUser.email,
+                                    name,
+                            "",
+                                    2,
+                                    ""
+                                    ))
                         }
                     }
                     is Result.Error -> {
@@ -42,7 +46,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
         }
     }
 
-    private suspend fun createDepartmnetInFirestore(staffId : String, user: User) {
+    private suspend fun createDepartmnetInFirestore(staffId: String, user: User) {
         when (val result = userRepository.createDepartmnetInFirestore(staffId)) {
             is Result.Success -> {
                 user.departmentId = result.data?.id
@@ -58,7 +62,7 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
         }
     }
 
-    private suspend fun createUserInFirestore(id : String, user: User) {
+    private suspend fun createUserInFirestore(id: String, user: User) {
         when (val result = userRepository.createUserInFirestore(id, user)) {
             is Result.Success -> {
                 _echo.value = MyApp.instance.getString(R.string.registration_successful)
@@ -90,10 +94,10 @@ class RegisterViewModel(private val userRepository: UserRepository) : MyBaseView
         }
 
         if (
-            errorFormState.usernameError == null &&
-            errorFormState.emailError == null &&
-            errorFormState.passwordError == null &&
-            errorFormState.confirmPasswordError == null
+                errorFormState.usernameError == null &&
+                errorFormState.emailError == null &&
+                errorFormState.passwordError == null &&
+                errorFormState.confirmPasswordError == null
         ) errorFormState.isDataValid = true
 
         _registerForm.value = errorFormState
