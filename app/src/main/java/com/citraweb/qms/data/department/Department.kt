@@ -46,7 +46,7 @@ data class Department(
 
         @get:PropertyName("currentQueue")
         @set:PropertyName("currentQueue")
-        var currentQueue: Int? = 0,
+        var currentQueue: Int? = null,
 
 
         @get:PropertyName("amount")

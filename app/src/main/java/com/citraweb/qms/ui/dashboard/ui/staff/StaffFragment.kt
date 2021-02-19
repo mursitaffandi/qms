@@ -28,7 +28,8 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
     private lateinit var company: String
     private lateinit var prefix: String
     private var queue = listOf<String>()
-    private var currentIndexWaiting = 0
+    private var currentIndexWaiting : Int? = null
+    private var indexLimit = 0
     private var binding: FragmentStaffBinding? = null
     private lateinit var viewModel: StaffViewModel
     private lateinit var adapter: FireQueueAdapter
@@ -60,17 +61,23 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
                             powerStatus = StateDepartment.valueOf(it1)
                             binding?.ivPower?.setImageResource(iconPower[powerStatus.ordinal])
                         }
-
-                        it.currentQueue?.let { it1 ->
-                            if (currentIndexWaiting < it1) {
-                                binding?.staffSlider?.resetSlider()
-                                currentIndexWaiting = it1
-                            }
-                        }
-
                         it.waitings?.let { it1 ->
                             queue = it1
+                            indexLimit = queue.size -1
                         }
+
+                        it.currentQueue?.let { it1 ->
+                            currentIndexWaiting = it1
+                            currentIndexWaiting?.let { itCurrentQueue->
+                                if (itCurrentQueue >= indexLimit)
+                                    binding?.staffSlider?.isLocked = true
+                                else
+                                    binding?.staffSlider?.resetSlider()
+                            }
+
+                        }
+
+
 
                         it.companyId?.let { it1 ->
                             company = it1
@@ -122,10 +129,17 @@ class StaffFragment : Fragment(), FireQueueAdapter.OnItemClick {
         binding?.staffSlider?.onSlideCompleteListener =
                 object : SlideToActView.OnSlideCompleteListener {
                     override fun onSlideComplete(view: SlideToActView) {
-                        if (queue.size > currentIndexWaiting ) {
-                            val nextIndex = 1+currentIndexWaiting
+                        if (currentIndexWaiting==null){
+                            val nextIndex = 0
                             viewModel.setQueue(nextIndex, queue[nextIndex], departmentName, company)
                             binding?.staffSlider?.bumpVibration = 50
+                        }
+                        currentIndexWaiting?.let {
+                            if (queue.size > it) {
+                                val nextIndex = 1+it
+                                viewModel.setQueue(nextIndex, queue[nextIndex], departmentName, company)
+                                binding?.staffSlider?.bumpVibration = 50
+                            }
                         }
                     }
                 }
